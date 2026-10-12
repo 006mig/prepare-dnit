@@ -36,6 +36,7 @@
 @keyframes popIn{from{opacity:0;transform:translateY(9px)}to{opacity:1;transform:translateY(0)}}
 @media(max-width:600px){.auth-card{padding:28px 22px}.header-right{gap:10px}.header-link{font-size:12px}.feedback-panel{padding:18px 16px}.feedback-panel h2{font-size:20px}}
 
+/* Refinamiento visual v3: controles consistentes, temas completos y login sin destellos. */
 :root{--bg:#f7f9fd;--panel:#ffffff;--ink:#1d2942;--muted:#66758d;--line:#e1e7f1;--blue:#566be7;--darkblue:#4459d8;--soft:#eef2ff;--green:#22865f;--red:#c94858;--radius:22px;--hover:#f6f8ff;--elev:0 12px 35px rgba(31,48,90,.045)}
 html[data-theme="dark"]{color-scheme:dark;--bg:#0c1324;--panel:#151e30;--ink:#f0f3fb;--muted:#adbad0;--line:#2b3850;--blue:#8494ff;--darkblue:#a1acff;--soft:#202b48;--green:#72ddb0;--red:#ff8f9c;--hover:#22304b;--elev:0 18px 40px rgba(0,0,0,.13)}
 body{background:var(--bg);color:var(--ink)}
@@ -145,6 +146,17 @@ html[data-theme="dark"] .header-link:hover,html[data-theme="dark"] .logout-btn:h
 @media(max-width:370px){.theme-copy{display:none}.header-right .theme-btn{padding:10px 13px}}
 @media(prefers-reduced-motion:reduce){.loading-spinner{animation:none}}
 
+
+/* Confirmación de respuestas: elegir → revisar → confirmar → corregir. */
+.confirm-zone{display:grid;gap:11px;margin-top:26px}
+.choice-hint{font-size:13px;line-height:1.55;color:var(--muted);text-align:center;margin:0;min-height:21px}
+.confirm-zone .button{min-height:56px}
+.confirm-zone .button:disabled{opacity:1;background:var(--soft);border-color:var(--line);color:var(--muted);box-shadow:none;cursor:not-allowed}
+.skip-zone{margin-top:17px}
+.skip-zone .button-skip.is-selected{background:var(--soft);border-color:var(--blue);color:var(--blue);box-shadow:inset 0 0 0 1px var(--blue)}
+.option.chosen{box-shadow:inset 0 0 0 1px var(--blue)}
+.option.chosen:focus-visible{outline-offset:3px}
+@media(max-width:640px){.confirm-zone{margin-top:23px}.choice-hint{font-size:12px}.skip-zone .button-skip{width:100%}}
 </style>
   
   
@@ -212,7 +224,12 @@ html[data-theme="dark"] .header-link:hover,html[data-theme="dark"] .logout-btn:h
         <section id="feedbackPanel" class="feedback-panel hidden" aria-live="polite" aria-atomic="true">
           <h2 id="feedbackTitle"></h2><div id="feedbackBody" class="feedback-body"></div>
           <button type="button" id="continueBtn" class="button button-primary button-wide">Continuar →</button>
-        </section><div class="skip-zone" id="skipZone"><button type="button" id="skipBtn" class="button button-skip">No sé la respuesta <span aria-hidden="true">→</span></button><span>Cuenta como “No sé” en tu resultado.</span></div></div>
+        </section>
+        <div id="confirmZone" class="confirm-zone">
+          <p id="choiceHint" class="choice-hint" role="status" aria-live="polite">Elegí una opción. Podés cambiarla antes de confirmar.</p>
+          <button type="button" id="confirmBtn" class="button button-primary button-wide" disabled>Confirmar respuesta <span aria-hidden="true">→</span></button>
+        </div>
+        <div class="skip-zone" id="skipZone"><button type="button" id="skipBtn" class="button button-skip" aria-pressed="false">No sé la respuesta</button><span>Si no sabés, marcá esta opción y confirmá.</span></div></div>
       </section>
       <section class="screen hidden" id="screen-result" aria-labelledby="resultTitle">
         <div class="result-head"><span class="eyebrow">RONDA TERMINADA</span><h1 id="resultTitle">¡Terminaste!</h1><p>Este es tu resultado de las últimas 20 preguntas.</p></div>
@@ -240,6 +257,7 @@ html[data-theme="dark"] .header-link:hover,html[data-theme="dark"] .logout-btn:h
   let user = null;
   let wired = false;
   let pendingSync = null;
+  // Una pestaña que se reabre después de 15 minutos no renueva automáticamente el acceso.
   const INACTIVITY_LIMIT_MS = 15 * 60 * 1000;
   const LAST_ACTIVITY_KEY = 'preparate-dnit:last-activity:v1';
   let idleTimeout = null;
@@ -353,6 +371,7 @@ html[data-theme="dark"] .header-link:hover,html[data-theme="dark"] .logout-btn:h
     const take = Math.min(20, bank.length);
     const seen = new Set(state.seen);
     if (seen.size >= bank.length) { state.seen = []; seen.clear(); }
+    // Como Duolingo: los errores pendientes vuelven en la PRÓXIMA ronda.
     const dueIds = new Set(state.pending);
     const pending = shuffle(bank.filter(q => dueIds.has(q.id)));
     let chosen = pickBalanced(pending, Math.min(take, pending.length));
@@ -379,7 +398,7 @@ html[data-theme="dark"] .header-link:hover,html[data-theme="dark"] .logout-btn:h
   function newRound() {
     const items = drawRound();
     if (!items.length) { toast('No se encontraron preguntas para comenzar.'); return; }
-    state.session = { items, index: 0, responses: Array(items.length).fill(null), startedAt: new Date().toISOString() };
+    state.session = { items, index: 0, responses: Array(items.length).fill(null), draft: null, startedAt: new Date().toISOString() };
     save();
     isChanging = false;
     screen('quiz');
@@ -399,11 +418,63 @@ html[data-theme="dark"] .header-link:hover,html[data-theme="dark"] .logout-btn:h
     el('questionKind').textContent = q.type === 'vf' ? 'VERDADERO O FALSO' : 'SELECCIÓN MÚLTIPLE';
     el('questionSource').textContent = q.reference || `Cuestionario · Pregunta ${q.sourceId}`;
     el('questionTitle').textContent = q.question;
-    el('answerOptions').innerHTML = q.choices.map((choice, i) => `<button type="button" class="option" data-answer="${i}"><span class="option-letter">${q.type === 'vf' ? (i === 0 ? 'V' : 'F') : 'ABCD'[i]}</span><span>${encode(choice)}</span></button>`).join('');
+    el('answerOptions').innerHTML = q.choices.map((choice, i) => `<button type="button" class="option" data-answer="${i}" aria-pressed="false"><span class="option-letter">${q.type === 'vf' ? (i === 0 ? 'V' : 'F') : 'ABCD'[i]}</span><span>${encode(choice)}</span></button>`).join('');
     el('feedbackPanel').className = 'feedback-panel hidden';
+    el('confirmZone').classList.remove('hidden');
     el('skipZone').classList.remove('hidden');
     isChanging = false;
-    if (s.responses[s.index] !== null && s.responses[s.index] !== undefined) showFeedback(q,s.responses[s.index]);
+    // Si el alumno recargó durante la corrección, recuperar el mensaje.
+    if (s.responses[s.index] !== null && s.responses[s.index] !== undefined) {
+      showFeedback(q, s.responses[s.index]);
+    } else {
+      renderDraftSelection();
+    }
+  }
+
+  // Esta elección es provisional: NO cambia el puntaje ni revela la respuesta.
+  // Se conserva incluso después de recargar o de volver desde el inicio.
+  function getDraftSelection() {
+    const s = state.session;
+    const draft = s?.draft;
+    if (!s || !draft || draft.index !== s.index) return null;
+    const q = s.items[s.index];
+    if (draft.value === 'skip') return 'skip';
+    return Number.isInteger(draft.value) && draft.value >= 0 && draft.value < q.choices.length ? draft.value : null;
+  }
+
+  function renderDraftSelection() {
+    const selected = getDraftSelection();
+    for (const button of el('answerOptions').querySelectorAll('[data-answer]')) {
+      const chosen = selected !== null && selected !== 'skip' && Number(button.dataset.answer) === selected;
+      button.classList.toggle('chosen', chosen);
+      button.setAttribute('aria-pressed', String(chosen));
+    }
+    const skip = el('skipBtn');
+    skip.classList.toggle('is-selected', selected === 'skip');
+    skip.setAttribute('aria-pressed', String(selected === 'skip'));
+    el('confirmBtn').disabled = selected === null;
+    el('choiceHint').textContent = selected === null
+      ? 'Elegí una opción. Podés cambiarla antes de confirmar.'
+      : selected === 'skip'
+        ? 'Seleccionaste “No sé”. También podés elegir otra respuesta.'
+        : 'Respuesta seleccionada. Revisala o cambiala antes de confirmar.';
+  }
+
+  function selectAnswer(selected) {
+    if (currentScreen !== 'quiz' || !state.session) return;
+    const s = state.session;
+    const q = s.items[s.index];
+    if (!q || s.responses[s.index] !== null && s.responses[s.index] !== undefined) return;
+    if (selected !== 'skip' && (!Number.isInteger(selected) || selected < 0 || selected >= q.choices.length)) return;
+    s.draft = {index: s.index, value: selected};
+    save();
+    renderDraftSelection();
+  }
+
+  function confirmAnswer() {
+    const selected = getDraftSelection();
+    if (selected === null) return;
+    answer(selected);
   }
 
   function shortExplanation(q) {
@@ -432,6 +503,7 @@ html[data-theme="dark"] .header-link:hover,html[data-theme="dark"] .logout-btn:h
       if (i === q.correct) b.classList.add('mark-right');
       if (!isSkip && response === i && !correct) b.classList.add('mark-wrong');
     });
+    el('confirmZone').classList.add('hidden');
     el('skipZone').classList.add('hidden');
     el('continueBtn').textContent = state.session.index >= state.session.items.length - 1 ? 'Ver mi resultado →' : 'Continuar →';
     panel.scrollIntoView({behavior:'smooth',block:'nearest'});
@@ -444,6 +516,7 @@ html[data-theme="dark"] .header-link:hover,html[data-theme="dark"] .logout-btn:h
     const q = s.items[s.index];
     if (!q || s.responses[s.index] !== null && s.responses[s.index] !== undefined) return;
     s.responses[s.index] = selected;
+    s.draft = null;
     if (selected === 'skip' || selected !== q.correct) {
       if (!state.pending.includes(q.id)) state.pending.push(q.id);
     } else state.pending = state.pending.filter(id => id !== q.id);
@@ -455,7 +528,7 @@ html[data-theme="dark"] .header-link:hover,html[data-theme="dark"] .logout-btn:h
     if (currentScreen !== 'quiz' || !state.session) return;
     const s = state.session;
     if (s.responses[s.index] === null || s.responses[s.index] === undefined) return;
-    if (s.index < s.items.length - 1) { s.index++; save(); renderQuestion(); window.scrollTo({top:0,behavior:'smooth'}); }
+    if (s.index < s.items.length - 1) { s.index++; s.draft = null; save(); renderQuestion(); window.scrollTo({top:0,behavior:'smooth'}); }
     else finishRound();
   }
 
@@ -534,9 +607,10 @@ html[data-theme="dark"] .header-link:hover,html[data-theme="dark"] .logout-btn:h
     el('startBtn').addEventListener('click', startOrResume);
     el('restartBtn').addEventListener('click', () => { if (confirm('¿Descartar esta ronda sin terminar y empezar otras 20 preguntas?')) newRound(); });
     el('goHome').addEventListener('click', () => { if (!isChanging) screen('home'); });
-    el('skipBtn').addEventListener('click', () => answer('skip'));
+    el('skipBtn').addEventListener('click', () => selectAnswer('skip'));
+    el('confirmBtn').addEventListener('click', confirmAnswer);
     el('continueBtn').addEventListener('click', continueQuiz);
-    el('answerOptions').addEventListener('click', e => { const b = e.target.closest('[data-answer]'); if (b) answer(Number(b.dataset.answer)); });
+    el('answerOptions').addEventListener('click', e => { const b = e.target.closest('[data-answer]'); if (b) selectAnswer(Number(b.dataset.answer)); });
     el('anotherBtn').addEventListener('click', newRound);
     el('resultHome').addEventListener('click', () => screen('home'));
     el('reviewBtn').addEventListener('click', () => { el('reviewPanel').classList.remove('hidden'); renderReview(); el('reviewPanel').scrollIntoView({ behavior: 'smooth', block: 'start' }); });
@@ -548,13 +622,23 @@ html[data-theme="dark"] .header-link:hover,html[data-theme="dark"] .logout-btn:h
       const q = state.session?.items[state.session.index];
       if (!q) return;
       const n = Number(e.key);
-      if (e.key === 'Enter' && state.session.responses[state.session.index] !== null) { e.preventDefault(); continueQuiz(); return; }
-      if (n >= 1 && n <= q.choices.length) { e.preventDefault(); answer(n - 1); }
-      if (q.type === 'vf' && (e.key.toLowerCase() === 'v' || e.key.toLowerCase() === 'f')) { e.preventDefault(); const i = e.key.toLowerCase() === 'v' ? 0 : 1; answer(i); }
+      if (e.key === 'Enter') {
+        // No disparar dos acciones cuando el foco ya está en un botón.
+        if (document.activeElement?.tagName === 'BUTTON') return;
+        e.preventDefault();
+        if (state.session.responses[state.session.index] !== null) continueQuiz();
+        else confirmAnswer();
+        return;
+      }
+      if (state.session.responses[state.session.index] !== null) return;
+      if (n >= 1 && n <= q.choices.length) { e.preventDefault(); selectAnswer(n - 1); }
+      if (q.type === 'vf' && (e.key.toLowerCase() === 'v' || e.key.toLowerCase() === 'f')) { e.preventDefault(); const i = e.key.toLowerCase() === 'v' ? 0 : 1; selectAnswer(i); }
     });
     renderHome();
   }
 
+  // Cierre por inactividad compartido entre pestañas del mismo navegador.
+  // Se comprueba el reloj persistido ANTES de admitir una acción, y al reabrir la página.
   function lastActivity() {
     try {
       const value = Number(localStorage.getItem(LAST_ACTIVITY_KEY));
@@ -590,6 +674,7 @@ html[data-theme="dark"] .header-link:hover,html[data-theme="dark"] .logout-btn:h
   }
   function registerActivity() {
     if (!user || loggingOut || el('appRoot').classList.contains('hidden')) return;
+    // No premiar una actividad posterior al vencimiento renovando la sesión.
     if (activityExpired()) {
       void logOut('idle');
       return;
@@ -624,6 +709,7 @@ html[data-theme="dark"] .header-link:hover,html[data-theme="dark"] .logout-btn:h
     lastActivityWrite = now;
   }
 
+  // Solo cargar el banco cuando la cuenta está realmente autenticada.
   async function enterStudy(account) {
     if (loggingOut || activityExpired()) {
       await logOut('idle');
@@ -671,13 +757,14 @@ html[data-theme="dark"] .header-link:hover,html[data-theme="dark"] .logout-btn:h
   async function logOut(reason = 'manual') {
     if (loggingOut) return;
     loggingOut = true;
-    sessionEpoch += 1; 
+    sessionEpoch += 1; // Invalida cargas asíncronas que estuvieran en curso.
     clearIdleTimer();
     clearTimeout(pendingSync);
     pendingSync = null;
     const previousUserId = user?.id || null;
     const previousProgressKey = progressKey;
     const progressToSave = state;
+    // Ocultamos primero los datos: nunca esperar la respuesta de la red para bloquearlos.
     user = null; bank = []; material = []; sources = new Map();
     sourceTitles = {}; scopedSources = new Set(); byId = new Map(); state = blank();
     el('appRoot').classList.add('hidden');
@@ -685,6 +772,7 @@ html[data-theme="dark"] .header-link:hover,html[data-theme="dark"] .logout-btn:h
     showAuthState('login');
     el('loginSubmit').disabled = true;
     el('loginPassword').value = '';
+    // Al cerrar sesión no dejar en este equipo una copia local de preguntas respondidas.
     try { if (previousProgressKey) localStorage.removeItem(previousProgressKey); } catch (_) { }
     progressKey = '';
     screenReset();
@@ -694,6 +782,7 @@ html[data-theme="dark"] .header-link:hover,html[data-theme="dark"] .logout-btn:h
     try { localStorage.removeItem(LAST_ACTIVITY_KEY); } catch (_) { }
     try {
       if (supa) {
+        // Guardar la última respuesta antes de revocar la sesión. La pantalla YA está bloqueada.
         if (previousUserId) {
           try {
             const operation = supa.from('dnit_progress').upsert({
@@ -701,6 +790,7 @@ html[data-theme="dark"] .header-link:hover,html[data-theme="dark"] .logout-btn:h
               data: {...progressToSave},
               updated_at: new Date().toISOString()
             }, {onConflict:'user_id'});
+            // No bloquear indefinidamente el cierre si se perdió la conexión.
             await Promise.race([
               Promise.resolve(operation),
               new Promise(resolve => setTimeout(resolve, 2000))
@@ -771,6 +861,8 @@ html[data-theme="dark"] .header-link:hover,html[data-theme="dark"] .logout-btn:h
       }
     });
     el('logoutBtn').addEventListener('click', () => void logOut('manual'));
+    // En una recarga, primero restauramos la sesión persistida y luego verificamos su identidad.
+    // No mostramos el formulario mientras la comprobación esté en curso.
     try {
       const { data:cached, error:sessionError } = await supa.auth.getSession();
       if (sessionError) throw sessionError;
@@ -786,6 +878,7 @@ html[data-theme="dark"] .header-link:hover,html[data-theme="dark"] .logout-btn:h
       }
       const {data:verified,error:verifyError} = await supa.auth.getUser();
       if (verifyError || !verified?.user) {
+        // Un problema de conectividad no debe cerrar una sesión activa ni borrar el progreso.
         msg.classList.add('error');
         msg.textContent = 'No se pudo restaurar la sesión. Comprobá tu conexión e intentá actualizar.';
         showAuthState('login');
@@ -805,4 +898,3 @@ html[data-theme="dark"] .header-link:hover,html[data-theme="dark"] .logout-btn:h
 })();
 </script></body>
 </html>
-s
