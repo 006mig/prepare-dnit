@@ -4,6 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#f8f9fc">
+  <script>try{document.documentElement.dataset.theme=localStorage.getItem('preparate-dnit:theme:v1')==='dark'?'dark':'light';}catch(_){}</script>
   <meta name="description" content="Practicá para Asistente de Apoyo y Gestión Documental de DNIT con 20 preguntas aleatorias. Respondé y revisá tu puntaje.">
   <title>Prepárate — Concurso DNIT · Apoyo y Gestión Documental</title>
   
@@ -34,33 +35,147 @@
 .option:disabled{opacity:1;cursor:default}.option:disabled:not(.mark-right):not(.mark-wrong){opacity:.62}.feedback-panel:not(.hidden)+.skip-zone{display:none}
 @keyframes popIn{from{opacity:0;transform:translateY(9px)}to{opacity:1;transform:translateY(0)}}
 @media(max-width:600px){.auth-card{padding:28px 22px}.header-right{gap:10px}.header-link{font-size:12px}.feedback-panel{padding:18px 16px}.feedback-panel h2{font-size:20px}}
+
+:root{--bg:#f7f9fd;--panel:#ffffff;--ink:#1d2942;--muted:#66758d;--line:#e1e7f1;--blue:#566be7;--darkblue:#4459d8;--soft:#eef2ff;--green:#22865f;--red:#c94858;--radius:22px;--hover:#f6f8ff;--elev:0 12px 35px rgba(31,48,90,.045)}
+html[data-theme="dark"]{color-scheme:dark;--bg:#0c1324;--panel:#151e30;--ink:#f0f3fb;--muted:#adbad0;--line:#2b3850;--blue:#8494ff;--darkblue:#a1acff;--soft:#202b48;--green:#72ddb0;--red:#ff8f9c;--hover:#22304b;--elev:0 18px 40px rgba(0,0,0,.13)}
+body{background:var(--bg);color:var(--ink)}
+.site-header{background:var(--panel);border-color:var(--line)}
+.brand{color:var(--ink)}.brand-mark{background:#687cf3;color:white;box-shadow:0 5px 12px rgba(85,111,229,.18)}
+.brand-period{color:var(--blue)}
+.header-right{gap:10px}
+.header-link,.logout-btn,.theme-btn,.text-button,.link-back,.quiet-button{font-size:13px;font-weight:750;display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:43px;white-space:nowrap;color:var(--ink);background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:10px 15px;box-shadow:none;text-decoration:none;transition:background .18s,border-color .18s,transform .18s}
+.header-link:hover,.logout-btn:hover,.theme-btn:hover,.text-button:hover,.link-back:hover,.quiet-button:hover{background:var(--hover);color:var(--ink);border-color:var(--blue);text-decoration:none}
+.theme-glyph{font-size:17px;line-height:1;font-weight:700;color:var(--blue)}
+.logout-btn{color:var(--muted)}
+.container{padding-top:68px}
+.home-top h1{color:var(--ink)}
+.start-card,.stat,.review-item,.library-entry{background:var(--panel);border:1px solid var(--line);box-shadow:var(--elev)}
+.start-card{padding:34px 34px 36px;border-radius:22px}
+.start-card h2{margin-top:16px;color:var(--ink)}.start-card p{color:var(--muted)}
+.round-actions{display:grid;gap:14px;margin-top:4px}
+.round-actions .button{min-height:54px;margin:0;line-height:1.35}
+.button{border-radius:12px}
+.button-primary{background:#6578ed;color:#fff;border-color:#6578ed;box-shadow:0 7px 20px rgba(83,105,229,.15)}.button-primary:hover{background:#5066e7;border-color:#5066e7;color:#fff}
+.button-secondary,.button-skip{background:var(--panel);color:var(--ink);border-color:var(--line);box-shadow:none}
+.button-secondary:hover,.button-skip:hover{background:var(--hover);color:var(--blue);border-color:var(--blue)}
+.history-disclosure{margin-top:20px}
+.history-disclosure summary{min-height:53px;padding:14px 17px;border:1px solid var(--line);border-radius:12px;background:var(--panel);color:var(--ink);box-shadow:var(--elev);transition:background .2s}
+.history-disclosure summary:hover{background:var(--hover)}
+.history-line{background:var(--panel);border-color:var(--line)}
+.material-teaser{display:flex;align-items:center;gap:18px;padding:23px 24px;margin-top:36px;border:1px solid var(--line);border-radius:18px;background:var(--panel);box-shadow:var(--elev)}
+.material-icon{display:grid;place-items:center;flex:0 0 48px;width:48px;height:48px;border-radius:14px;background:var(--soft);color:var(--blue);font-size:25px;font-weight:800}
+.material-copy{flex:1;min-width:0}
+.material-copy strong{color:var(--ink);font-size:15px}
+.material-copy p{margin:5px 0 0;line-height:1.55;color:var(--muted);font-size:13px}
+.material-action{flex:0 0 auto;min-width:173px;gap:14px;padding:12px 18px;white-space:nowrap}
+.button-arrow{display:inline-block;font-size:18px;line-height:1;color:var(--blue)}
+.footer{color:var(--muted);border-color:var(--line)}
+.quiz-content h1,.library-top h1,.result-head h1,.simple-section-heading h2{color:var(--ink)}
+.option,.library-search{background:var(--panel);color:var(--ink);border-color:var(--line)}
+.option:hover{background:var(--hover);border-color:var(--blue)}
+.option-letter{background:var(--soft);border-color:var(--line);color:var(--muted)}
+.option.chosen{background:var(--soft);border-color:var(--blue)}
+.option.chosen .option-letter{background:var(--blue);color:#fff}
+.question-tag,.library-number,.round-label{background:var(--soft);color:var(--blue)}
+.source-reference,.question-number,.progress-note,.muted-small{color:var(--muted)}
+.progress-line{background:var(--line)}.progress-line span{background:var(--blue)}
+.library-entry pre,.source-details pre{background:var(--bg);color:var(--ink)}
+.library-scope,.review-body{color:var(--muted)}.review-body strong{color:var(--ink)}
+.stat{border-radius:16px}.stat span{color:var(--muted)}
+.feedback-panel{box-shadow:var(--elev)}
+html[data-theme="dark"] .feedback-panel:not(.is-wrong):not(.is-skip){background:#17342d;border-color:#2b6b53}html[data-theme="dark"] .feedback-panel.is-wrong{background:#392533;border-color:#7c4457}html[data-theme="dark"] .feedback-panel.is-skip{background:#202b40;border-color:#405275}
+html[data-theme="dark"] .feedback-body{color:#dce6ef}html[data-theme="dark"] .feedback-panel h2{color:#8be8b9}html[data-theme="dark"] .feedback-panel.is-wrong h2{color:#ffb0bc}html[data-theme="dark"] .feedback-panel.is-skip h2{color:#c6d0ff}
+html[data-theme="dark"] .option.mark-right,html[data-theme="dark"] .option.mark-right:hover{background:#19392e!important;border-color:#3eaf7a!important;color:#d5ffe8}html[data-theme="dark"] .option.mark-wrong,html[data-theme="dark"] .option.mark-wrong:hover{background:#3a2531!important;border-color:#ca6a85!important;color:#ffe3eb}
+html[data-theme="dark"] .option.mark-right .option-letter{color:#fff}html[data-theme="dark"] .option.mark-wrong .option-letter{color:#fff}
+.auth-shell{background:radial-gradient(ellipse at 13% -10%,rgba(101,119,230,.14),transparent 54%),linear-gradient(155deg,#f3f6fc,#fafbff 70%);padding:42px 20px;min-height:100dvh}
+.auth-card{width:min(100%,455px);border-radius:25px;padding:36px 38px;background:var(--panel);border:1px solid var(--line);box-shadow:0 25px 80px rgba(36,56,116,.095);color:var(--ink)}
+.auth-head-row{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.auth-logo{display:flex;align-items:center;gap:8px;font-size:23px;font-weight:800;letter-spacing:-.8px;color:var(--ink);margin:0}
+.auth-logo .brand-period{margin-left:0}
+.auth-theme-btn{font-size:12px;min-height:40px;padding:9px 12px;border-radius:11px}
+.auth-intro{margin-top:40px}
+.auth-card h1{font-size:clamp(30px,5vw,38px);line-height:1.18;letter-spacing:-1.35px;color:var(--ink);margin:14px 0 10px}
+.auth-intro>p{font-size:14px;color:var(--muted);line-height:1.65;margin:0 0 26px}
+.login-form{display:grid;gap:9px}
+.login-form label{color:var(--ink);font-size:13px;font-weight:700;margin-top:10px}
+.login-form input{height:54px;border:1px solid var(--line);border-radius:12px;background:var(--bg);color:var(--ink);width:100%;padding:0 16px;transition:border-color .16s,box-shadow .16s}
+.login-form input::placeholder{color:var(--muted)}
+.login-form input:focus-visible{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px rgba(110,132,249,.18)}
+.login-form .button{margin-top:16px;justify-content:center}
+.auth-message{color:var(--muted)!important;font-size:12px!important;line-height:1.6}
+.auth-foot{border-top:1px solid var(--line);padding-top:20px;margin-top:25px;color:var(--muted);line-height:1.5;text-align:center;font-size:11px}
+.auth-loading{display:none;min-height:255px;align-items:center;justify-content:center;flex-direction:column;gap:10px;text-align:center;color:var(--muted)}
+.auth-loading strong{color:var(--ink);font-size:17px}
+.loading-spinner{display:block;border:3px solid var(--line);border-top-color:var(--blue);width:34px;height:34px;border-radius:50%;animation:spin .8s linear infinite;margin-bottom:7px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.auth-shell[data-auth-state="checking"] .auth-loading{display:flex}
+.auth-shell[data-auth-state="checking"] .auth-intro,.auth-shell[data-auth-state="checking"] .login-form,.auth-shell[data-auth-state="checking"] .auth-message,.auth-shell[data-auth-state="checking"] .auth-foot{display:none}
+html[data-theme="dark"] .auth-shell{background:radial-gradient(ellipse at 13% -10%,rgba(96,116,236,.16),transparent 56%),linear-gradient(145deg,#0b1220,#10182a 76%)}
+html[data-theme="dark"] .auth-card{background:#161f31;border-color:#2c3951;box-shadow:0 28px 90px rgba(0,0,0,.28)}
+html[data-theme="dark"] .auth-intro>p{color:#b8c4d6}
+html[data-theme="dark"] .login-form input{background:#10192a;color:#f2f6ff;border-color:#344058}
+html[data-theme="dark"] .auth-theme-btn{background:#212c41;color:#f0f3fb}
+html[data-theme="dark"] .material-teaser{background:var(--panel);border-color:var(--line)}
+html[data-theme="dark"] .material-action{background:var(--panel);border-color:var(--line);color:var(--ink)}
+html[data-theme="dark"] .header-link,html[data-theme="dark"] .logout-btn,html[data-theme="dark"] .text-button,html[data-theme="dark"] .quiet-button,html[data-theme="dark"] .link-back{background:var(--panel);color:var(--ink);border-color:var(--line)}
+html[data-theme="dark"] .button-secondary,html[data-theme="dark"] .button-skip{background:var(--panel);color:var(--ink);border-color:var(--line)}
+html[data-theme="dark"] .button-secondary:hover,html[data-theme="dark"] .button-skip:hover{background:var(--hover);border-color:var(--blue)}
+html[data-theme="dark"] .header-link:hover,html[data-theme="dark"] .logout-btn:hover{background:var(--hover)}
+@media(max-width:700px){
+  .material-teaser{flex-wrap:wrap;padding:22px;gap:14px}
+  .material-copy{flex:1 1 calc(100% - 70px)}
+  .material-action{flex:1 1 100%;width:100%;min-width:0}
+}
+@media(max-width:640px){
+  .site-header .header-content{min-height:69px;height:auto;padding:11px 0;flex-wrap:wrap;align-items:center;gap:10px}
+  .header-right{width:auto;justify-content:flex-end;margin-left:auto;gap:7px}
+  .header-link,.logout-btn,.theme-btn{padding:8px 10px;font-size:12px;min-height:40px}
+  .brand{font-size:18px}.brand-mark{height:30px;width:30px}
+  .container{padding:39px 0 72px}
+  .start-card{padding:25px 21px 28px}
+  .round-actions{gap:13px}
+  .material-icon{flex-basis:42px;width:42px;height:42px;font-size:22px}
+  .material-teaser{padding:19px 17px}
+  .auth-shell{padding:20px 14px}
+  .auth-card{padding:28px 24px;border-radius:22px}
+  .auth-intro{margin-top:32px}
+  .auth-card h1{font-size:32px}
+  .auth-theme-btn{padding:8px 10px}
+}
+@media(max-width:370px){.theme-copy{display:none}.header-right .theme-btn{padding:10px 13px}}
+@media(prefers-reduced-motion:reduce){.loading-spinner{animation:none}}
+
 </style>
   
   
 </head>
 <body>
-  <section class="auth-shell" id="authShell" aria-labelledby="authTitle">
+  <section class="auth-shell" id="authShell" data-auth-state="checking" aria-labelledby="authTitle">
     <div class="auth-card">
-      <div class="auth-logo"><span class="brand-mark">✳</span> prepárate<span class="brand-period">.</span></div>
-      <span class="eyebrow">ACCESO PRIVADO · DNIT 2026</span>
+      <div class="auth-head-row">
+        <div class="auth-logo"><span class="brand-mark">✳</span><span>prepárate<span class="brand-period">.</span></span></div>
+        <button type="button" id="authThemeToggle" class="theme-btn auth-theme-btn" title="Cambiar el tema" aria-label="Cambiar entre tema claro y oscuro"><span class="theme-glyph" aria-hidden="true">☾</span><span class="theme-copy">Oscuro</span></button>
+      </div>
+      <div class="auth-loading" id="authLoading" role="status" aria-live="polite"><span class="loading-spinner" aria-hidden="true"></span><strong>Restaurando tu sesión</strong><span>Comprobando acceso seguro…</span></div>
+      <div class="auth-intro"><span class="eyebrow">ACCESO PRIVADO · DNIT 2026</span>
       <h1 id="authTitle">Tu espacio para aprender.</h1>
-      <p>Ingresá con la cuenta autorizada para practicar y guardar tus avances.</p>
+      <p>Ingresá con tu cuenta para practicar y continuar donde te quedaste.</p></div>
       <form id="loginForm" class="login-form">
         <label for="loginEmail">Correo de usuario</label>
         <input id="loginEmail" name="email" type="email" autocomplete="username" required placeholder="tu@email.com" />
         <label for="loginPassword">Contraseña</label>
         <input id="loginPassword" name="password" type="password" autocomplete="current-password" required placeholder="Tu contraseña" />
-        <button type="submit" class="button button-primary button-wide" id="loginSubmit">Iniciar sesión →</button>
+        <button type="submit" class="button button-primary button-wide" id="loginSubmit"><span>Iniciar sesión</span><span aria-hidden="true">→</span></button>
       </form>
       <p id="authMessage" role="status" aria-live="polite" class="auth-message">Comprobando configuración...</p>
-      <div class="auth-foot">Solo una cuenta autorizada · Cierre automático tras 15 minutos sin actividad</div>
+      <div class="auth-foot"><span aria-hidden="true">◈</span> Acceso reservado · Cierre tras 15 minutos sin actividad</div>
     </div>
   </section>
   <div class="app hidden" id="appRoot">
     <header class="site-header">
       <div class="header-content">
         <button type="button" class="brand" id="brandBtn" aria-label="Ir al inicio"><span class="brand-mark">✳</span><span>prepárate<span class="brand-period">.</span></span></button>
-        <div class="header-right"><button type="button" id="themeToggle" class="header-link" title="Cambiar el tema">Tema oscuro</button><button type="button" id="logoutBtn" class="logout-btn" title="Cerrar sesión">Salir</button></div>
+        <div class="header-right"><button type="button" id="themeToggle" class="header-link theme-btn" title="Cambiar el tema" aria-label="Cambiar entre tema claro y oscuro"><span class="theme-glyph" aria-hidden="true">☾</span><span class="theme-copy">Oscuro</span></button><button type="button" id="logoutBtn" class="logout-btn" title="Cerrar sesión"><span aria-hidden="true">↪</span> Salir</button></div>
       </div>
     </header>
     <main id="main" class="container" tabindex="-1">
@@ -73,8 +188,10 @@
           <div class="start-card-top"><span class="small-label">PRÓXIMA RONDA</span><span class="round-label">20 preguntas</span></div>
           <h2>¿Empezamos?</h2>
           <p>Respondé y aprendé con cada corrección. Las preguntas falladas vuelven en la próxima ronda.</p>
-          <button type="button" id="startBtn" class="button button-primary button-wide">Comenzar examen <span aria-hidden="true">→</span></button>
-          <button type="button" id="restartBtn" class="button button-secondary button-wide hidden">Empezar una ronda nueva</button>
+          <div class="round-actions">
+            <button type="button" id="startBtn" class="button button-primary button-wide">Comenzar examen <span aria-hidden="true">→</span></button>
+            <button type="button" id="restartBtn" class="button button-secondary button-wide hidden">Empezar una ronda nueva</button>
+          </div>
         </div>
         <section class="summary" aria-labelledby="summaryTitle">
           <div class="simple-section-heading"><h2 id="summaryTitle">Tu progreso</h2><span id="sessionsLabel" class="muted-small"></span></div>
@@ -86,7 +203,7 @@
           <p class="progress-note" id="progressNote">Tu progreso se guarda automáticamente en este navegador.</p>
           <details class="history-disclosure" id="historyDisclosure"><summary>Ver mis últimas rondas <span aria-hidden="true">⌄</span></summary><div id="historyContent"></div></details>
         </section>
-        <div class="material-teaser"><div><strong>¿Necesitás repasar?</strong><p>Consultá los 120 apartados del cuestionario original. El examen sigue el temario de Apoyo y Gestión Documental.</p></div><button type="button" class="button button-secondary" id="openMaterial">Abrir material →</button></div>
+        <div class="material-teaser"><span class="material-icon" aria-hidden="true">▤</span><div class="material-copy"><strong>¿Necesitás repasar?</strong><p>Consultá los 120 apartados del cuestionario original y sus explicaciones.</p></div><button type="button" class="button button-secondary material-action" id="openMaterial"><span>Abrir material</span><span aria-hidden="true" class="button-arrow">→</span></button></div>
       </section>
       <section class="screen hidden" id="screen-quiz" aria-labelledby="questionTitle">
         <div class="quiz-header"><button type="button" class="link-back" id="goHome">← Volver</button><span class="question-number" id="questionNumber">Pregunta 1 de 20</span></div>
@@ -123,7 +240,6 @@
   let user = null;
   let wired = false;
   let pendingSync = null;
-  // Una pestaña que se reabre después de 15 minutos no renueva automáticamente el acceso.
   const INACTIVITY_LIMIT_MS = 15 * 60 * 1000;
   const LAST_ACTIVITY_KEY = 'preparate-dnit:last-activity:v1';
   let idleTimeout = null;
@@ -145,22 +261,34 @@
   const encode = input => String(input ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   const shuffle = list => { const a = [...list]; for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
   const THEME_KEY = 'preparate-dnit:theme:v1';
-  function applyTheme(theme) {
-    const next = theme === 'dark' ? 'dark' : 'light';
-    document.body.dataset.theme = next;
+  function applyTheme(value) {
+    const theme = value === 'dark' ? 'dark' : 'light';
+    document.documentElement.dataset.theme = theme;
+    document.body.dataset.theme = theme;
     const meta = document.querySelector('meta[name="theme-color"]');
-    if (meta) meta.setAttribute('content', next === 'dark' ? '#0f172a' : '#f8f9fc');
-    const toggle = document.getElementById('themeToggle');
-    if (toggle) toggle.textContent = next === 'dark' ? 'Tema claro' : 'Tema oscuro';
-    try { localStorage.setItem(THEME_KEY, next); } catch (_) {}
+    if (meta) meta.setAttribute('content', theme === 'dark' ? '#0c1324' : '#f7f9fd');
+    for (const id of ['themeToggle','authThemeToggle']) {
+      const control = el(id);
+      if (!control) continue;
+      const glyph = control.querySelector('.theme-glyph');
+      const label = control.querySelector('.theme-copy');
+      if (glyph) glyph.textContent = theme === 'dark' ? '☀' : '☾';
+      if (label) label.textContent = theme === 'dark' ? 'Claro' : 'Oscuro';
+      control.setAttribute('aria-label', theme === 'dark' ? 'Activar tema claro' : 'Activar tema oscuro');
+      control.setAttribute('aria-pressed', theme === 'dark' ? 'true' : 'false');
+    }
+    try { localStorage.setItem(THEME_KEY, theme); } catch (_) { }
   }
   function loadTheme() {
-    let saved = 'light';
-    try { saved = localStorage.getItem(THEME_KEY) || 'light'; } catch (_) {}
+    let saved = document.documentElement.dataset.theme || 'light';
+    try { saved = localStorage.getItem(THEME_KEY) || saved; } catch (_) { }
     applyTheme(saved);
   }
-  function toggleTheme() {
-    applyTheme(document.body.dataset.theme === 'dark' ? 'light' : 'dark');
+  function toggleTheme() { applyTheme(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark'); }
+  function showAuthState(value) {
+    const shell = el('authShell');
+    shell.dataset.authState = value === 'checking' ? 'checking' : 'login';
+    el('loginSubmit').disabled = value === 'checking';
   }
   const save = () => {
     if (!user) return;
@@ -225,7 +353,6 @@
     const take = Math.min(20, bank.length);
     const seen = new Set(state.seen);
     if (seen.size >= bank.length) { state.seen = []; seen.clear(); }
-    // Como Duolingo: los errores pendientes vuelven en la PRÓXIMA ronda.
     const dueIds = new Set(state.pending);
     const pending = shuffle(bank.filter(q => dueIds.has(q.id)));
     let chosen = pickBalanced(pending, Math.min(take, pending.length));
@@ -276,7 +403,6 @@
     el('feedbackPanel').className = 'feedback-panel hidden';
     el('skipZone').classList.remove('hidden');
     isChanging = false;
-    // Si el alumno recargó durante la corrección, recuperar el mensaje.
     if (s.responses[s.index] !== null && s.responses[s.index] !== undefined) showFeedback(q,s.responses[s.index]);
   }
 
@@ -429,8 +555,6 @@
     renderHome();
   }
 
-  // Cierre por inactividad compartido entre pestañas del mismo navegador.
-  // Se comprueba el reloj persistido ANTES de admitir una acción, y al reabrir la página.
   function lastActivity() {
     try {
       const value = Number(localStorage.getItem(LAST_ACTIVITY_KEY));
@@ -466,7 +590,6 @@
   }
   function registerActivity() {
     if (!user || loggingOut || el('appRoot').classList.contains('hidden')) return;
-    // No premiar una actividad posterior al vencimiento renovando la sesión.
     if (activityExpired()) {
       void logOut('idle');
       return;
@@ -501,7 +624,6 @@
     lastActivityWrite = now;
   }
 
-  // Solo cargar el banco cuando la cuenta está realmente autenticada.
   async function enterStudy(account) {
     if (loggingOut || activityExpired()) {
       await logOut('idle');
@@ -549,21 +671,20 @@
   async function logOut(reason = 'manual') {
     if (loggingOut) return;
     loggingOut = true;
-    sessionEpoch += 1; // Invalida cargas asíncronas que estuvieran en curso.
+    sessionEpoch += 1; 
     clearIdleTimer();
     clearTimeout(pendingSync);
     pendingSync = null;
     const previousUserId = user?.id || null;
     const previousProgressKey = progressKey;
     const progressToSave = state;
-    // Ocultamos primero los datos: nunca esperar la respuesta de la red para bloquearlos.
     user = null; bank = []; material = []; sources = new Map();
     sourceTitles = {}; scopedSources = new Set(); byId = new Map(); state = blank();
     el('appRoot').classList.add('hidden');
     el('authShell').classList.remove('hidden');
+    showAuthState('login');
     el('loginSubmit').disabled = true;
     el('loginPassword').value = '';
-    // Al cerrar sesión no dejar en este equipo una copia local de preguntas respondidas.
     try { if (previousProgressKey) localStorage.removeItem(previousProgressKey); } catch (_) { }
     progressKey = '';
     screenReset();
@@ -573,7 +694,6 @@
     try { localStorage.removeItem(LAST_ACTIVITY_KEY); } catch (_) { }
     try {
       if (supa) {
-        // Guardar la última respuesta antes de revocar la sesión. La pantalla YA está bloqueada.
         if (previousUserId) {
           try {
             const operation = supa.from('dnit_progress').upsert({
@@ -581,7 +701,6 @@
               data: {...progressToSave},
               updated_at: new Date().toISOString()
             }, {onConflict:'user_id'});
-            // No bloquear indefinidamente el cierre si se perdió la conexión.
             await Promise.race([
               Promise.resolve(operation),
               new Promise(resolve => setTimeout(resolve, 2000))
@@ -615,12 +734,14 @@
     const settings = window.DNIT_CONFIG || {};
     const msg = el('authMessage');
     if (!settings.url || !/^https:\/\/[^\s]+\.supabase\.co\/?$/.test(settings.url) || !settings.publishableKey || settings.publishableKey.includes('REEMPLAZAR') || settings.url.includes('REEMPLAZAR')) {
+      showAuthState('login');
       msg.textContent = 'Acceso aún no configurado. Revisá la configuración de Supabase de esta página.';
       msg.classList.add('error');
       el('loginSubmit').disabled = true;
       return;
     }
     if (!window.supabase?.createClient) {
+      showAuthState('login');
       msg.textContent = 'No se pudo cargar el servicio de autenticación. Revisá tu conexión a internet.';
       msg.classList.add('error');
       el('loginSubmit').disabled = true;
@@ -650,17 +771,38 @@
       }
     });
     el('logoutBtn').addEventListener('click', () => void logOut('manual'));
-    // La sesión puede persistir en Supabase, pero solo entra si hubo actividad reciente.
-    const {data,error} = await supa.auth.getUser();
-    if (!error && data?.user) {
-      if (activityExpired()) await logOut('idle');
-      else await enterStudy(data.user);
-    } else {
-      msg.textContent = 'Ingresá con tu correo y contraseña para continuar.';
+    try {
+      const { data:cached, error:sessionError } = await supa.auth.getSession();
+      if (sessionError) throw sessionError;
+      if (!cached?.session) {
+        msg.textContent = 'Ingresá con tu correo y contraseña para continuar.';
+        showAuthState('login');
+        return;
+      }
+      if (activityExpired()) {
+        await logOut('idle');
+        showAuthState('login');
+        return;
+      }
+      const {data:verified,error:verifyError} = await supa.auth.getUser();
+      if (verifyError || !verified?.user) {
+        msg.classList.add('error');
+        msg.textContent = 'No se pudo restaurar la sesión. Comprobá tu conexión e intentá actualizar.';
+        showAuthState('login');
+        return;
+      }
+      await enterStudy(verified.user);
+    } catch (err) {
+      console.warn('No se pudo restaurar la sesión:', err);
+      msg.classList.add('error');
+      msg.textContent = 'No pudimos comprobar tu sesión. Actualizá la página o revisá la conexión.';
+      showAuthState('login');
     }
   }
   loadTheme();
-  authBootstrap().catch(e => {el('authMessage').classList.add('error');el('authMessage').textContent='Error de conexión con el servicio de autenticación.';console.error(e);});
+  el('authThemeToggle').addEventListener('click',toggleTheme);
+  authBootstrap().catch(e => {showAuthState('login');el('authMessage').classList.add('error');el('authMessage').textContent='Error de conexión con el servicio de autenticación.';console.error(e);});
 })();
 </script></body>
 </html>
+s
