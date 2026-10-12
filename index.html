@@ -53,14 +53,14 @@
         <button type="submit" class="button button-primary button-wide" id="loginSubmit">Iniciar sesión →</button>
       </form>
       <p id="authMessage" role="status" aria-live="polite" class="auth-message">Comprobando configuración...</p>
-      <div class="auth-foot">Acceso limitado a una cuenta · Sin registro público</div>
+      <div class="auth-foot">Solo una cuenta autorizada · Cierre automático tras 15 minutos sin actividad</div>
     </div>
   </section>
   <div class="app hidden" id="appRoot">
     <header class="site-header">
       <div class="header-content">
         <button type="button" class="brand" id="brandBtn" aria-label="Ir al inicio"><span class="brand-mark">✳</span><span>prepárate<span class="brand-period">.</span></span></button>
-        <div class="header-right"><button type="button" id="headerLibrary" class="header-link">Material de estudio <span aria-hidden="true">↗</span></button><button type="button" id="logoutBtn" class="logout-btn">Salir</button></div>
+        <div class="header-right"><button type="button" id="headerLibrary" class="header-link">Material de estudio <span aria-hidden="true">↗</span></button><button type="button" id="logoutBtn" class="logout-btn" title="Cerrar sesión">Salir</button></div>
       </div>
     </header>
     <main id="main" class="container" tabindex="-1">
@@ -123,6 +123,15 @@
   let user = null;
   let wired = false;
   let pendingSync = null;
+  // Una pestaña que se reabre después de 15 minutos no renueva automáticamente el acceso.
+  const INACTIVITY_LIMIT_MS = 15 * 60 * 1000;
+  const LAST_ACTIVITY_KEY = 'preparate-dnit:last-activity:v1';
+  let idleTimeout = null;
+  let sessionEpoch = 0;
+  let loggingOut = false;
+  let lastActivityWrite = 0;
+  let monitorInstalled = false;
+
   let progressKey = '';
   const blank = () => ({ seen: [], recent: [], history: [], correct: 0, wrong: 0, skipped: 0, pending: [], session: null, lastResult: null });
   let state = blank();
@@ -402,16 +411,94 @@
     renderHome();
   }
 
+  // Cierre por inactividad compartido entre pestañas del mismo navegador.
+  // Se comprueba el reloj persistido ANTES de admitir una acción, y al reabrir la página.
+  function lastActivity() {
+    try {
+      const value = Number(localStorage.getItem(LAST_ACTIVITY_KEY));
+      return Number.isFinite(value) && value > 0 ? value : 0;
+    } catch (_) { return 0; }
+  }
+  function activityExpired() {
+    const last = lastActivity();
+    const now = Date.now();
+    return !last || last > now + 60000 || now - last >= INACTIVITY_LIMIT_MS;
+  }
+  function clearIdleTimer() {
+    if (idleTimeout) clearTimeout(idleTimeout);
+    idleTimeout = null;
+  }
+  function scheduleIdleTimer() {
+    clearIdleTimer();
+    if (!user || loggingOut) return;
+    const remaining = INACTIVITY_LIMIT_MS - (Date.now() - lastActivity());
+    if (remaining <= 0 || activityExpired()) {
+      void logOut('idle');
+      return;
+    }
+    idleTimeout = setTimeout(() => checkInactivity(), remaining + 100);
+  }
+  function checkInactivity() {
+    if (!user || loggingOut) return;
+    if (activityExpired()) {
+      void logOut('idle');
+      return;
+    }
+    scheduleIdleTimer();
+  }
+  function registerActivity() {
+    if (!user || loggingOut || el('appRoot').classList.contains('hidden')) return;
+    // No premiar una actividad posterior al vencimiento renovando la sesión.
+    if (activityExpired()) {
+      void logOut('idle');
+      return;
+    }
+    const now = Date.now();
+    if (now - lastActivityWrite < 3000) return;
+    try { localStorage.setItem(LAST_ACTIVITY_KEY, String(now)); } catch (_) { }
+    lastActivityWrite = now;
+    scheduleIdleTimer();
+  }
+  function startSessionMonitor() {
+    if (monitorInstalled) return;
+    monitorInstalled = true;
+    for (const eventName of ['pointerdown', 'keydown', 'touchstart', 'wheel']) {
+      document.addEventListener(eventName, registerActivity, { passive: true });
+    }
+    window.addEventListener('focus', checkInactivity);
+    window.addEventListener('pageshow', checkInactivity);
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden) checkInactivity();
+    });
+    window.addEventListener('storage', (event) => {
+      if (event.key !== LAST_ACTIVITY_KEY || !user || loggingOut) return;
+      if (!event.newValue || activityExpired()) void logOut('idle');
+      else scheduleIdleTimer();
+    });
+    setInterval(checkInactivity, 10000);
+  }
+  function refreshActivityAfterLogin() {
+    const now = Date.now();
+    try { localStorage.setItem(LAST_ACTIVITY_KEY, String(now)); } catch (_) { }
+    lastActivityWrite = now;
+  }
+
   // Solo cargar el banco cuando la cuenta está realmente autenticada.
   async function enterStudy(account) {
+    if (loggingOut || activityExpired()) {
+      await logOut('idle');
+      return;
+    }
     if (user?.id === account.id && bank.length) return;
+    const expectedEpoch = sessionEpoch;
     user = account;
+    scheduleIdleTimer();
     document.getElementById('authMessage').textContent = 'Cargando tu material privado…';
     const {data:rows,error} = await supa.from('dnit_content').select('payload').eq('id','material').limit(1);
+    if (expectedEpoch !== sessionEpoch || loggingOut) return;
+    if (activityExpired()) { await logOut('idle'); return; }
     if (error || !rows?.length || !rows[0].payload?.STUDY_QUESTIONS?.length) {
-      user = null;
-      document.getElementById('authMessage').textContent = 'Esta cuenta no tiene permiso para acceder al material. Revisá la política RLS y el ID del usuario en Supabase.';
-      document.getElementById('authMessage').classList.add('error');
+      await logOut('denied');
       return;
     }
     const source = rows[0].payload;
@@ -425,6 +512,8 @@
     let local = null;
     try { local = JSON.parse(localStorage.getItem(progressKey) || localStorage.getItem('preparate-dnit-apoyo-2026-v1') || 'null'); } catch(_){ }
     const {data:cloud,error:progError} = await supa.from('dnit_progress').select('data').eq('user_id',user.id).maybeSingle();
+    if (expectedEpoch !== sessionEpoch || loggingOut) return;
+    if (activityExpired()) { await logOut('idle'); return; }
     if (progError) console.warn('El progreso en la nube no pudo cargarse:',progError.message);
     state = normalizeState(cloud?.data || local);
     if (state.session) {
@@ -436,16 +525,67 @@
     if (!wired) { wire(); wired = true; }
     screen('home');
     save();
+    scheduleIdleTimer();
   }
 
-  async function logOut() {
-    try { clearTimeout(pendingSync); await syncProgress(); await supa.auth.signOut(); } catch(e){ console.warn(e); }
-    user = null; bank = []; material = []; sources = new Map(); byId = new Map(); state = blank();
+  async function logOut(reason = 'manual') {
+    if (loggingOut) return;
+    loggingOut = true;
+    sessionEpoch += 1; // Invalida cargas asíncronas que estuvieran en curso.
+    clearIdleTimer();
+    clearTimeout(pendingSync);
+    pendingSync = null;
+    const previousUserId = user?.id || null;
+    const previousProgressKey = progressKey;
+    const progressToSave = state;
+    // Ocultamos primero los datos: nunca esperar la respuesta de la red para bloquearlos.
+    user = null; bank = []; material = []; sources = new Map();
+    sourceTitles = {}; scopedSources = new Set(); byId = new Map(); state = blank();
     el('appRoot').classList.add('hidden');
     el('authShell').classList.remove('hidden');
+    el('loginSubmit').disabled = true;
     el('loginPassword').value = '';
-    el('authMessage').textContent = 'Sesión cerrada.';
+    // Al cerrar sesión no dejar en este equipo una copia local de preguntas respondidas.
+    try { if (previousProgressKey) localStorage.removeItem(previousProgressKey); } catch (_) { }
+    progressKey = '';
     screenReset();
+    const msg = el('authMessage');
+    msg.classList.remove('error');
+    msg.textContent = 'Cerrando la sesión…';
+    try { localStorage.removeItem(LAST_ACTIVITY_KEY); } catch (_) { }
+    try {
+      if (supa) {
+        // Guardar la última respuesta antes de revocar la sesión. La pantalla YA está bloqueada.
+        if (previousUserId) {
+          try {
+            const operation = supa.from('dnit_progress').upsert({
+              user_id: previousUserId,
+              data: {...progressToSave},
+              updated_at: new Date().toISOString()
+            }, {onConflict:'user_id'});
+            // No bloquear indefinidamente el cierre si se perdió la conexión.
+            await Promise.race([
+              Promise.resolve(operation),
+              new Promise(resolve => setTimeout(resolve, 2000))
+            ]);
+          } catch (err) { console.warn('Último guardado en la nube no disponible:', err); }
+        }
+        const { error } = await supa.auth.signOut();
+        if (error) throw error;
+      }
+      msg.textContent = reason === 'idle'
+        ? 'Tu sesión venció después de 15 minutos sin actividad. Iniciá sesión nuevamente.'
+        : reason === 'denied'
+          ? 'Esta cuenta no está autorizada para acceder al cuestionario.'
+          : 'Cerraste sesión correctamente.';
+    } catch (err) {
+      console.warn('No se pudo revocar la sesión de Supabase:', err);
+      msg.classList.add('error');
+      msg.textContent = 'El contenido está bloqueado. No se pudo cerrar la sesión en el servidor; revisá la conexión antes de continuar.';
+    } finally {
+      el('loginSubmit').disabled = false;
+      loggingOut = false;
+    }
   }
 
   function screenReset() {
@@ -457,7 +597,7 @@
     const settings = window.DNIT_CONFIG || {};
     const msg = el('authMessage');
     if (!settings.url || !/^https:\/\/[^\s]+\.supabase\.co\/?$/.test(settings.url) || !settings.publishableKey || settings.publishableKey.includes('REEMPLAZAR') || settings.url.includes('REEMPLAZAR')) {
-      msg.textContent = 'Acceso aún no configurado. El administrador debe completar config.js y la configuración de Supabase.';
+      msg.textContent = 'Acceso aún no configurado. Revisá la configuración de Supabase de esta página.';
       msg.classList.add('error');
       el('loginSubmit').disabled = true;
       return;
@@ -469,19 +609,37 @@
       return;
     }
     supa = window.supabase.createClient(settings.url,settings.publishableKey, {auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:false}});
+    startSessionMonitor();
     el('loginForm').addEventListener('submit',async (e) => {
       e.preventDefault();
       el('loginSubmit').disabled = true;
       msg.classList.remove('error');msg.textContent='Verificando cuenta…';
-      const {data,error} = await supa.auth.signInWithPassword({email:el('loginEmail').value.trim(),password:el('loginPassword').value});
-      if (error || !data.user) {msg.classList.add('error'); msg.textContent='Usuario o contraseña incorrectos, o cuenta no habilitada.';}
-      else await enterStudy(data.user);
-      el('loginSubmit').disabled = false;
+      try {
+        const {data,error} = await supa.auth.signInWithPassword({email:el('loginEmail').value.trim(),password:el('loginPassword').value});
+        if (error || !data?.user) {
+          msg.classList.add('error');
+          msg.textContent='Usuario o contraseña incorrectos, o cuenta no habilitada.';
+        } else {
+          refreshActivityAfterLogin();
+          await enterStudy(data.user);
+        }
+      } catch (err) {
+        console.warn('Error al iniciar sesión:',err);
+        msg.classList.add('error');
+        msg.textContent='No se pudo conectar con Supabase. Revisá tu conexión.';
+      } finally {
+        if (!loggingOut) el('loginSubmit').disabled = false;
+      }
     });
-    el('logoutBtn').addEventListener('click',logOut);
+    el('logoutBtn').addEventListener('click', () => void logOut('manual'));
+    // La sesión puede persistir en Supabase, pero solo entra si hubo actividad reciente.
     const {data,error} = await supa.auth.getUser();
-    if (!error && data?.user) await enterStudy(data.user);
-    else msg.textContent = 'Ingresá con tu correo y contraseña para continuar.';
+    if (!error && data?.user) {
+      if (activityExpired()) await logOut('idle');
+      else await enterStudy(data.user);
+    } else {
+      msg.textContent = 'Ingresá con tu correo y contraseña para continuar.';
+    }
   }
   authBootstrap().catch(e => {el('authMessage').classList.add('error');el('authMessage').textContent='Error de conexión con el servicio de autenticación.';console.error(e);});
 })();
