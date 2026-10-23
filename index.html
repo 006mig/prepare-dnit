@@ -158,6 +158,52 @@ html[data-theme="dark"] .header-link:hover,html[data-theme="dark"] .logout-btn:h
 .option.chosen:focus-visible{outline-offset:3px}
 @media(max-width:640px){.confirm-zone{margin-top:23px}.choice-hint{font-size:12px}.skip-zone .button-skip{width:100%}}
 
+/* Experiencia de aprendizaje por materias: compatible con claro/oscuro */
+.learning-hub{margin-top:36px;padding:27px;border:1px solid var(--line);border-radius:22px;background:var(--panel);box-shadow:var(--elev)}
+.learning-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:16px}
+.learning-title{font-size:25px;letter-spacing:-.8px;color:var(--ink);margin:8px 0 5px}.learning-intro{color:var(--muted);margin:0 0 6px;font-size:14px;line-height:1.55}
+.learning-badge{background:var(--soft);border-radius:12px;padding:9px 12px;color:var(--blue);font-weight:800;font-size:12px;white-space:nowrap}
+.learning-actions{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:20px 0}
+.learning-stats{font-size:12px;color:var(--muted);margin:0 0 17px}
+.lesson-card-list{display:grid;gap:9px}
+.lesson-card{appearance:none;border:1px solid var(--line);border-radius:13px;background:var(--bg);color:var(--ink);display:flex;align-items:center;text-align:left;width:100%;padding:14px;gap:14px;transition:background .18s,border-color .18s,transform .15s}
+.lesson-card:hover{background:var(--soft);border-color:var(--blue);transform:translateY(-1px)}
+.lesson-emoji{display:grid;place-items:center;width:42px;height:42px;flex:0 0 42px;border-radius:12px;background:var(--panel);font-size:23px}
+.lesson-info{display:grid;gap:3px;min-width:0;flex:1}.lesson-info strong{font-size:14px}.lesson-info small{font-size:12px;color:var(--muted)}
+.lesson-chevron{color:var(--blue);font-weight:800;font-size:18px}
+.learn-screen-head{margin:25px 0 28px}.learn-screen-head h1{font-size:clamp(25px,4vw,37px);color:var(--ink);letter-spacing:-1px;margin:12px 0 6px}
+.learn-screen-head p{color:var(--muted);line-height:1.65}.learn-screen-head small{color:var(--blue);font-weight:700}
+.study-note{margin-bottom:10px;background:var(--panel);border:1px solid var(--line);border-radius:13px;overflow:hidden}
+.study-note summary{list-style:none;padding:16px 18px;display:flex;align-items:center;gap:12px;cursor:pointer;font-weight:700;font-size:14px}
+.study-note summary::-webkit-details-marker{display:none}.study-note[open]{border-color:var(--blue)}
+.study-note-number{color:var(--blue);background:var(--soft);border-radius:8px;padding:7px 9px;font-size:11px;font-weight:900}
+.study-note-heading{flex:1;min-width:0}.study-note-done{color:var(--muted);white-space:nowrap;font-size:11px}
+.study-note-body{padding:0 20px 22px;color:var(--ink);font-size:14px;line-height:1.75}.study-note-body p{white-space:normal}
+.study-source{font-size:12px;color:var(--muted);border-left:3px solid var(--blue);padding-left:10px;margin-bottom:16px}
+.study-read{min-height:43px}.learn-footer{display:flex;gap:12px;position:sticky;bottom:12px;background:var(--panel);padding:12px;border-radius:14px;border:1px solid var(--line);margin-top:24px;box-shadow:var(--elev)}
+.study-source-link{color:var(--blue);font-size:12px;text-decoration:underline;text-underline-offset:3px}
+.game-hero{margin-top:25px}.game-tag{display:inline-block;padding:7px 12px;border-radius:9px;background:var(--soft);color:var(--blue);font-weight:850;font-size:12px}
+.game-hero h1{font-size:clamp(24px,4vw,33px);color:var(--ink);line-height:1.4;margin:16px 0 20px;letter-spacing:-.5px}
+.game-ref{font-size:12px;color:var(--muted);margin:11px 0 24px;display:block}
+.game-answers{display:grid;gap:10px}.game-choice{display:flex;align-items:center;gap:13px;width:100%;padding:16px;background:var(--panel);border:1px solid var(--line);color:var(--ink);border-radius:12px;font-size:14px;font-weight:700;text-align:left;line-height:1.55;min-height:58px}
+.game-choice:hover{background:var(--hover);border-color:var(--blue)}.game-choice.is-picked{border-color:var(--blue);background:var(--soft);box-shadow:inset 0 0 0 1px var(--blue)}
+.game-choice-mark{flex:0 0 30px;width:30px;height:30px;border-radius:9px;display:grid;place-items:center;background:var(--soft);color:var(--blue)}
+.game-guide{font-size:13px;color:var(--muted);margin:0 0 16px}
+.game-sequence{display:flex;flex-wrap:wrap;align-items:center;gap:8px;min-height:66px;padding:14px;border:1px dashed var(--line);border-radius:12px;margin:14px 0 17px}
+.game-pill{padding:8px 11px;border-radius:9px;background:var(--soft);color:var(--ink);font-size:12px;font-weight:700}.game-empty{font-size:13px;color:var(--muted)}
+.game-mini{display:inline-flex;margin:12px 0;border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:9px;padding:10px 12px;font-weight:700;font-size:12px}
+.game-pairs{display:grid;grid-template-columns:1fr 1fr;gap:10px}.game-pairs>.game-pair-item{grid-column:1}.game-pair-col{grid-column:2;grid-row:1/span 4;display:grid;gap:10px;grid-template-rows:repeat(4,minmax(0,1fr))}
+.game-pair-item{border:1px solid var(--line);border-radius:10px;background:var(--panel);padding:12px;text-align:left;color:var(--ink);font-size:12px;font-weight:700;min-height:64px}
+.game-pair-item.active{background:var(--soft);border-color:var(--blue)}.game-pair-item.paired{background:var(--soft);border-color:var(--green)}.game-pair-item:disabled{opacity:.65}
+.game-feedback{margin:24px 0;padding:21px;background:var(--panel);border:1px solid var(--red);border-radius:15px}
+.game-feedback[data-correct="true"]{border-color:var(--green)}.game-feedback h2{font-size:22px;margin:0 0 12px;color:var(--ink)}.game-feedback p{font-size:14px;line-height:1.65;color:var(--muted)}
+.game-feedback small{font-size:12px;color:var(--blue)}.game-buttons{display:grid;gap:12px;margin-top:22px}
+.game-buttons .button{width:100%}.game-review-list{margin-top:20px}
+.memory-card{background:var(--panel);border:2px dashed var(--blue);padding:45px 23px;text-align:center;border-radius:18px;min-height:170px;display:grid;align-content:center}
+.memory-label{color:var(--blue);font-size:10px;font-weight:900;letter-spacing:1.2px}.memory-card p{font-size:18px;font-weight:700;line-height:1.5;color:var(--ink)}
+.memory-rate{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:640px){.learning-hub{padding:19px}.learning-title{font-size:21px}.learning-actions{grid-template-columns:1fr}.learning-heading{flex-wrap:wrap}.learning-badge{white-space:normal}.game-pairs{gap:6px}.game-pair-item{font-size:11px;padding:9px}.memory-rate{grid-template-columns:1fr}.learn-footer{flex-direction:column}.study-note summary{padding:12px}}
+
 /* Aviso accesible cuando la base de datos de Supabase esté pausada o inaccesible. */
 .auth-offline{display:none;text-align:center;padding:29px 0 8px;animation:popIn .2s ease-out}
 .auth-offline-icon{display:grid;place-items:center;margin:0 auto 19px;width:62px;height:62px;border-radius:19px;background:var(--soft);color:var(--blue);font-size:30px;font-weight:800}
@@ -194,6 +240,7 @@ html[data-theme="dark"] .header-link:hover,html[data-theme="dark"] .logout-btn:h
         <button type="button" id="retryDatabaseBtn" class="button button-primary button-wide">Reintentar conexión →</button>
         <p class="offline-detail" id="dbOfflineDetail">Cuando el servicio vuelva a estar disponible, podrás continuar estudiando.</p>
       </section>
+
       <div class="auth-intro"><span class="eyebrow">ACCESO PRIVADO · DNIT 2026</span>
       <h1 id="authTitle">Tu espacio para aprender.</h1>
       <p>Ingresá con tu cuenta para practicar y continuar donde te quedaste.</p></div>
@@ -218,8 +265,8 @@ html[data-theme="dark"] .header-link:hover,html[data-theme="dark"] .logout-btn:h
     <main id="main" class="container" tabindex="-1">
       <section class="screen" id="screen-home" aria-labelledby="homeTitle">
         <div class="home-top"><span class="eyebrow">CONVOCATORIA DNIT 2026 · APOYO Y GESTIÓN DOCUMENTAL</span>
-          <h1 id="homeTitle">Estudiá a tu ritmo.<br><span>Una pregunta a la vez.</span></h1>
-          <p class="intro">20 preguntas al azar sobre los cinco materiales de tu convocatoria. Selección múltiple y verdadero o falso, sin configurar nada.</p>
+          <h1 id="homeTitle">Estudiá a tu ritmo.<br><span>Aprendé jugando, paso a paso.</span></h1>
+          <p class="intro">Estudiá las normas por temas, resolvé desafíos interactivos y reforzá lo que todavía no dominás. También podés practicar con el examen de 20 preguntas.</p>
         </div>
         <div class="start-card">
           <div class="start-card-top"><span class="small-label">PRÓXIMA RONDA</span><span class="round-label">20 preguntas</span></div>
@@ -230,6 +277,14 @@ html[data-theme="dark"] .header-link:hover,html[data-theme="dark"] .logout-btn:h
             <button type="button" id="restartBtn" class="button button-secondary button-wide hidden">Empezar una ronda nueva</button>
           </div>
         </div>
+
+        <section class="learning-hub hidden" id="learningHub" aria-labelledby="learningTitle">
+          <div class="learning-heading"><div><span class="eyebrow">NUEVA RUTA DE APRENDIZAJE</span><h2 id="learningTitle" class="learning-title">Aprendé jugando.</h2><p id="gameHeadline" class="learning-intro">Lecciones y actividades de la convocatoria.</p></div><span class="learning-badge">★ Repaso inteligente</span></div>
+          <div class="learning-actions"><button type="button" id="openLessons" class="button button-secondary">Aprender por temas →</button><button type="button" id="playGame" class="button button-primary">Jugar 20 desafíos del temario →</button></div>
+          <p class="learning-stats" id="gameMetrics">Tu progreso se guarda con tu cuenta.</p>
+          <div id="lessonCards" class="lesson-card-list" aria-label="Temas de aprendizaje"></div>
+        </section>
+
         <section class="summary" aria-labelledby="summaryTitle">
           <div class="simple-section-heading"><h2 id="summaryTitle">Tu progreso</h2><span id="sessionsLabel" class="muted-small"></span></div>
           <div class="stats-grid" aria-live="polite">
@@ -264,6 +319,29 @@ html[data-theme="dark"] .header-link:hover,html[data-theme="dark"] .logout-btn:h
         <section id="reviewPanel" class="review-panel hidden" aria-labelledby="reviewTitle"><div class="simple-section-heading"><h2 id="reviewTitle">Revisión de respuestas</h2><button id="reviewFilter" type="button" class="button button-secondary">Mostrar todas</button></div><p class="muted-small">Consultá la respuesta correcta y, si necesitás, la explicación del documento.</p><div id="reviewList"></div></section>
       </section>
       <section class="screen hidden" id="screen-library" aria-labelledby="libraryTitle"><div class="library-top"><button type="button" class="link-back" id="libraryHome">← Volver al inicio</button><span class="eyebrow">CUESTIONARIO ORIGINAL</span><h1 id="libraryTitle">Material de estudio</h1><p>Los 120 apartados originales del PDF están disponibles, sin saltos. Los que no corresponden directamente a esta práctica aparecen como material complementario. Tocá uno para leer su respuesta.</p></div><label class="library-search"><span aria-hidden="true">⌕</span><input id="libraryInput" type="search" placeholder="Buscar pregunta o tema…" autocomplete="off" aria-label="Buscar en el material"></label><p id="libraryCount" class="muted-small"></p><div id="libraryList" class="library-list"></div><button id="libraryMore" type="button" class="button button-secondary button-wide">Mostrar más preguntas</button><p class="pdf-note">La biblioteca contiene el PDF original completo. Las 20 preguntas de cada ronda provienen del banco de práctica específico para Apoyo y Gestión Documental. No es un examen oficial.</p></section>
+
+      <section class="screen hidden" id="screen-learn" aria-labelledby="learnTitle">
+        <button class="link-back" type="button" id="learnHome">← Volver al inicio</button>
+        <div class="learn-screen-head"><span class="eyebrow">RUTA DE APRENDIZAJE · APRENDÉ PRIMERO</span><h1 id="learnTitle">Materia</h1><small id="learnSubtitle"></small><p id="learnIntro"></p><a class="study-source-link" id="learnSource" target="_blank" rel="noopener noreferrer" href="#">Consultar documento normativo</a></div>
+        <div id="lessonList"></div>
+        <div class="learn-footer"><button class="button button-primary button-wide" type="button" id="learnPractice">Practicar este tema →</button></div>
+      </section>
+      <section class="screen hidden" id="screen-game" aria-labelledby="gameQuestion">
+        <div class="quiz-header"><button type="button" class="link-back" id="gameHome">← Volver al inicio</button><span class="question-number" id="gameCount">Desafío 1 de 20</span></div>
+        <div class="progress-line" role="progressbar" aria-label="Progreso de los desafíos"><span id="gameProgress" style="width:0%"></span></div>
+        <div class="game-hero"><span id="gameType" class="game-tag"></span><h1 id="gameQuestion"></h1><span id="gameReference" class="game-ref"></span></div>
+        <div id="gameWork"></div>
+        <div id="gameInputActions" class="game-buttons"><button type="button" id="gameConfirm" class="button button-primary" disabled>Confirmar respuesta →</button><button type="button" id="gameSkip" class="button button-secondary">No sé; mostrar y repasar</button></div>
+        <div id="gameFlashActions" class="game-buttons hidden"><button type="button" id="gameFlip" class="button button-primary">Revelar respuesta →</button><div id="gameRate" class="memory-rate hidden"><button type="button" id="gameForgot" class="button button-secondary">Necesito repasarla</button><button type="button" id="gameRemembered" class="button button-primary">¡La recordé!</button></div></div>
+        <div id="gameFeedback" class="game-feedback hidden" aria-live="polite"><h2 id="gameFeedbackTitle"></h2><p id="gameFeedbackCorrect"></p><p id="gameFeedbackExplanation"></p><small id="gameFeedbackSource"></small><div class="game-buttons"><button type="button" id="gameContinue" class="button button-primary">Continuar →</button></div></div>
+      </section>
+      <section class="screen hidden" id="screen-game-result" aria-labelledby="gameResultTitle">
+        <div class="result-head"><span class="eyebrow">RETOS COMPLETADOS</span><h1 id="gameResultTitle">¡Terminaste tu aventura!</h1><p>Lo importante es aprender de cada intento.</p></div>
+        <div class="big-score"><strong id="gameResultNum">0 / 20</strong><span id="gameResultPercent"></span></div>
+        <div class="result-actions"><span class="learning-stats" id="gamePendingCount"></span><button class="button button-primary" id="gameResultMore" type="button">Otros 20 desafíos →</button><button class="button button-secondary" id="gameResultReview" type="button">Repasar los errores →</button><button class="button button-secondary" id="gameResultHome" type="button">Volver al inicio</button></div>
+        <div class="game-review-list" id="gameReviewRows"></div>
+      </section>
+
     </main>
     <footer class="footer"><span>DNIT · Apoyo y Gestión Documental · Sin registros ni pagos</span><span>Progreso protegido y sincronizado con tu cuenta.</span></footer>
   </div>
@@ -409,15 +487,18 @@ html[data-theme="dark"] .header-link:hover,html[data-theme="dark"] .logout-btn:h
 
   function screen(which) {
     currentScreen = which;
-    ['home', 'quiz', 'result', 'library'].forEach(x => el(`screen-${x}`).classList.toggle('hidden', x !== which));
+    ['home','quiz','result','library','learn','game','game-result'].forEach(x => el(`screen-${x}`).classList.toggle('hidden', x !== which));
     if (which === 'home') renderHome();
     if (which === 'quiz') renderQuestion();
     if (which === 'result') renderResult();
     if (which === 'library') renderLibrary();
+    if (which === 'game') renderGame();
+    if (which === 'game-result') renderGameResult();
     window.scrollTo(0, 0);
   }
 
   function renderHome() {
+    if(activities.length)renderLearningHome();
     el('totalRight').textContent = state.correct || 0;
     el('totalWrong').textContent = state.wrong || 0;
     el('totalSkip').textContent = state.skipped || 0;
@@ -676,8 +757,241 @@ html[data-theme="dark"] .header-link:hover,html[data-theme="dark"] .logout-btn:h
     el('libraryMore').classList.toggle('hidden', shown.length >= filtered.length);
   }
 
+  // ===== Juegos pedagógicos: se cargan desde el material privado con RLS =====
+  let learningModules = [];
+  let activities = [];
+  let activityMap = new Map();
+  let selectedModule = null;
+  const gameEmpty = () => ({seen:[],pending:[],correct:0,wrong:0,skipped:0,history:[],session:null,lastResult:null});
+  function gameState() {
+    if(!state.game || typeof state.game!=='object') state.game=gameEmpty();
+    for(const key of ['seen','pending','history']) if(!Array.isArray(state.game[key]))state.game[key]=[];
+    return state.game;
+  }
+  const gameTypes={cloze:'Completá la frase',case:'Situación práctica',multi:'Elegí todas',match:'Relacioná',order:'Ordená',flash:'Tarjeta de memoria'};
+  const moduleName=id=>learningModules.find(x=>x.id===id)?.title || 'Repaso';
+  const withoutTags=str=>encode(str || '');
+  const gameAnswerLabel=a=>a.mode==='flash'?a.back : a.mode==='order'?a.items.join(' → ') : a.mode==='match'?a.pairs.map(p=>p.join(' → ')).join(' · '):Array.isArray(a.correct)?a.correct.join(' · '):a.correct;
+  function initGames(source){
+    learningModules=Array.isArray(source.LEARNING_MODULES)?source.LEARNING_MODULES:[];
+    activities=Array.isArray(source.ACTIVITIES)?source.ACTIVITIES:[];
+    activityMap=new Map(activities.map(a=>[a.id,a]));
+    const section=el('learningHub');
+    if(section)section.classList.toggle('hidden',!activities.length);
+    if(activities.length)renderLearningHome();
+  }
+  function renderLearningHome(){
+    if(!activities.length)return;
+    const g=gameState();
+    const main=activities.filter(a=>!learningModules.find(m=>m.id===a.module)?.optional).length;
+    const optional=activities.length-main;
+    el('gameHeadline').textContent=`${learningModules.reduce((n,m)=>n+m.lessons.length,0)} lecciones · ${main} desafíos del temario + ${optional} complementarios`;
+    el('gameMetrics').textContent=`${g.correct} aciertos · ${g.pending.length} desafíos por repasar`;
+    el('playGame').textContent=g.session?'Continuar mi aventura →':'Jugar 20 desafíos del temario →';
+    el('lessonCards').innerHTML=learningModules.map(m=>{
+      const count=m.lessons.length, read=(state.learningRead || []).filter(id=>id.startsWith(m.id+'-')).length;
+      return `<button class="lesson-card" type="button" data-module="${encode(m.id)}"><span class="lesson-emoji" aria-hidden="true">${m.icon}</span><span class="lesson-info"><strong>${encode(m.title)}</strong><small>${m.optional?'Material complementario · ':''}${read}/${count} lecciones leídas · ${activities.filter(a=>a.module===m.id).length} actividades</small></span><span class="lesson-chevron" aria-hidden="true">→</span></button>`;
+    }).join('');
+  }
+  function enterLessons(moduleId){
+    selectedModule=moduleId || selectedModule || learningModules[0]?.id;
+    const m=learningModules.find(x=>x.id===selectedModule);
+    if(!m)return;
+    el('learnTitle').textContent=m.icon+' '+m.title;
+    el('learnIntro').textContent=m.intro;
+    el('learnSubtitle').textContent=m.subtitle;
+    el('learnSource').textContent='Documento: '+m.source.label;
+    el('learnSource').href=m.source.url;
+    renderLessonCards(m);
+    screen('learn');
+  }
+  function renderLessonCards(m){
+    el('lessonList').innerHTML=m.lessons.map((lesson,i)=>{
+      const done=(state.learningRead||[]).includes(lesson.id);
+      return `<details class="study-note"><summary><span class="study-note-number">${String(i+1).padStart(2,'0')}</span><span class="study-note-heading">${encode(lesson.title)}</span><span class="study-note-done">${done?'✓ Leído':'Leer'}</span></summary><div class="study-note-body"><p>${encode(lesson.body)}</p><div class="study-source">${encode(lesson.reference)}</div><button class="button button-secondary study-read" type="button" data-read="${encode(lesson.id)}">${done?'✓ Lección completada':'Marcar como leído'}</button></div></details>`;
+    }).join('');
+    el('learnPractice').textContent=`Practicar ${m.title} →`;
+  }
+  function setLessonRead(id){
+    if(!Array.isArray(state.learningRead))state.learningRead=[];
+    if(!state.learningRead.includes(id))state.learningRead.push(id);
+    save(); const m=learningModules.find(x=>x.id===selectedModule);if(m)renderLessonCards(m);
+  }
+  function gamePick(pool,n){
+    const g=gameState();
+    const byId=new Set();const picked=[];
+    const add=q=>{if(q&&!byId.has(q.id)){picked.push(q.id);byId.add(q.id);}};
+    shuffle(pool.filter(a=>g.pending.includes(a.id))).forEach(add);
+    const cap=()=>picked.length<n;
+    // Mezcla diferentes tipos, priorizando retos no vistos
+    const fresh=pool.filter(a=>!byId.has(a.id)&&!g.seen.includes(a.id));
+    const types=shuffle(Object.keys(gameTypes));
+    const queues=Object.fromEntries(types.map(t=>[t,shuffle(fresh.filter(a=>a.mode===t))]));
+    while(cap()&&types.some(t=>queues[t].length))for(const t of types){if(cap())add(queues[t].shift());}
+    for(const a of shuffle(pool.filter(a=>!byId.has(a.id)))){if(!cap())break;add(a);}
+    return shuffle(picked.slice(0,n));
+  }
+  function startGame(mod=null,onlyPending=false){
+    if(!activities.length){toast('Primero instalá el paquete de actividades en Supabase.');return;}
+    const g=gameState();
+    if(g.session && !confirm('¿Descartar el desafío actual y empezar uno nuevo?'))return;
+    let pool=mod?activities.filter(a=>a.module===mod):activities.filter(a=>!learningModules.find(m=>m.id===a.module)?.optional);
+    if(onlyPending){pool=pool.filter(a=>g.pending.includes(a.id));if(!pool.length){toast('Todavía no hay errores pendientes por repasar.');return;}}
+    if(!pool.length){toast('No hay actividades para este tema.');return;}
+    g.session={ids:gamePick(pool,Math.min(20,pool.length)),index:0,responses:[],draft:null,selectedLeft:null,graded:null,topic:mod};
+    save();screen('game');
+  }
+  function enterGame(){const g=gameState();if(g.session)screen('game');else startGame();}
+  function gameItem(){const s=gameState().session;return s?activityMap.get(s.ids[s.index]):null;}
+  function stableChoices(a){
+    if(a.mode==='order')return a.items.map((label,i)=>({label,i})).sort((x,y)=>hashChoice(a.id,x.i)-hashChoice(a.id,y.i));
+    if(a.mode==='match')return a.pairs.map((p,i)=>({label:p[1],i})).sort((x,y)=>hashChoice(a.id,x.i)-hashChoice(a.id,y.i));
+    return a.choices.map((label,i)=>({label,i})).sort((x,y)=>hashChoice(a.id,x.i)-hashChoice(a.id,y.i));
+  }
+  function hashChoice(id,index){const s=id+'|'+index;let v=2166136261;for(const ch of s){v=Math.imul(v^ch.charCodeAt(0),16777619);}return v>>>0;}
+  function renderGame(){
+    const s=gameState().session, a=gameItem();
+    if(!s||!a){screen('home');return;}
+    el('gameCount').textContent=`Desafío ${s.index+1} de ${s.ids.length}`;
+    el('gameProgress').style.width=((s.index+1)/s.ids.length*100)+'%';
+    el('gameType').textContent=gameTypes[a.mode]||'Desafío';
+    el('gameQuestion').textContent=a.prompt;
+    el('gameReference').textContent=a.reference;
+    const zone=el('gameWork');
+    const graded=!!s.graded; const draft=s.draft;
+    if(['cloze','case','multi'].includes(a.mode)){
+      zone.innerHTML='<div class="game-answers">'+stableChoices(a).map(c=>{
+        const chosen=a.mode==='multi'?(Array.isArray(draft)&&draft.includes(c.label)):draft===c.label;
+        return `<button class="game-choice ${chosen?'is-picked':''}" type="button" data-pick="${c.i}" aria-pressed="${chosen}"><span class="game-choice-mark">${chosen?'✓':a.mode==='multi'?'□':'○'}</span><span>${encode(c.label)}</span></button>`;
+      }).join('')+'</div>';
+    }else if(a.mode==='order'){
+      const ids=Array.isArray(draft)?draft:[];
+      const left=stableChoices(a).filter(c=>!ids.includes(c.i));
+      zone.innerHTML=`<p class="game-guide">Tocá cada elemento en el orden correcto. Podés deshacer antes de confirmar.</p><div class="game-sequence">${ids.length?ids.map((id,i)=>`<span class="game-pill">${i+1}. ${encode(a.items[id])}</span>`).join(''):'<span class="game-empty">Tu secuencia aparecerá aquí</span>'}</div><div class="game-answers">${left.map(c=>`<button type="button" class="game-choice" data-pick="${c.i}">${encode(c.label)}</button>`).join('')}</div><button type="button" class="game-mini" id="gameUndo">↶ Deshacer último</button>`;
+    }else if(a.mode==='match'){
+      const pairs=Array.isArray(draft)?draft:[]; const usedLeft=new Set(pairs.map(p=>p[0])),usedRight=new Set(pairs.map(p=>p[1]));
+      zone.innerHTML=`<p class="game-guide">Seleccioná un concepto a la izquierda y después su definición a la derecha.</p><div class="game-pairs">${a.pairs.map((p,i)=>`<button type="button" data-left="${i}" class="game-pair-item ${s.selectedLeft===i?'active':''} ${usedLeft.has(i)?'paired':''}" ${usedLeft.has(i)?'disabled':''}>${encode(p[0])}</button>`).join('')}<div class="game-pair-col">${stableChoices(a).map(p=>`<button type="button" data-right="${p.i}" class="game-pair-item ${usedRight.has(p.i)?'paired':''}" ${usedRight.has(p.i)?'disabled':''}>${encode(p.label)}</button>`).join('')}</div></div><div class="game-sequence">${pairs.map(p=>`<span class="game-pill">${encode(a.pairs[p[0]][0])} → ${encode(a.pairs[p[1]][1])}</span>`).join('') || '<span class="game-empty">Todavía no uniste conceptos</span>'}</div><button type="button" id="gameUndo" class="game-mini">↶ Deshacer última unión</button>`;
+    }else if(a.mode==='flash'){
+      zone.innerHTML=`<div class="memory-card"><span class="memory-label">${s.revealed?'RESPUESTA':'PENSÁ ANTES DE REVELAR'}</span><p>${s.revealed?encode(a.back):'Intentá responder mentalmente antes de mirar la tarjeta.'}</p></div>`;
+    }
+    el('gameFeedback').classList.toggle('hidden',!graded);
+    el('gameInputActions').classList.toggle('hidden',graded||a.mode==='flash');
+    el('gameFlashActions').classList.toggle('hidden',a.mode!=='flash'||graded);
+    if(a.mode==='flash'){
+      el('gameFlip').classList.toggle('hidden',!!s.revealed);
+      el('gameRate').classList.toggle('hidden',!s.revealed);
+    }
+    const can=(['cloze','case'].includes(a.mode)&&draft!==null)||(a.mode==='multi'&&Array.isArray(draft)&&draft.length>0)||(a.mode==='order'&&Array.isArray(draft)&&draft.length===a.items.length)||(a.mode==='match'&&Array.isArray(draft)&&draft.length===a.pairs.length);
+    const skipSelected = draft === '__skip__';
+    el('gameConfirm').disabled=(!can&&!skipSelected)||graded;
+    el('gameConfirm').textContent=skipSelected?'Confirmar «No sé» →':'Confirmar respuesta →';
+    el('gameSkip').textContent=skipSelected?'✓ Elegiste «No sé» · Podés cambiarlo':'No sé; marcar para repasar';
+    if(graded){
+      el('gameFeedbackTitle').textContent=s.graded.ok?'✓ ¡Bien hecho!':s.graded.skip?'La dejamos para repasar':'✕ Vamos a reforzar esto';
+      el('gameFeedback').dataset.correct=String(!!s.graded.ok);
+      el('gameFeedbackCorrect').textContent='Respuesta: '+gameAnswerLabel(a);
+      el('gameFeedbackExplanation').textContent=a.explanation || 'Revisá el artículo relacionado para comprender la respuesta.';
+      el('gameFeedbackSource').textContent=a.reference;
+    }
+  }
+  function gameAction(e){
+    const s=gameState().session,a=gameItem();if(!s||!a||s.graded)return;
+    const undo=e.target.closest('#gameUndo');
+    if(undo){if(Array.isArray(s.draft))s.draft.pop();s.selectedLeft=null;save();renderGame();return;}
+    const left=e.target.closest('[data-left]'),right=e.target.closest('[data-right]');
+    if(left){s.selectedLeft=Number(left.dataset.left);save();renderGame();return;}
+    if(right){
+      if(s.selectedLeft===null)return;
+      s.draft=Array.isArray(s.draft)?s.draft:[];
+      if(!s.draft.some(p=>p[0]===s.selectedLeft||p[1]===Number(right.dataset.right)))s.draft.push([s.selectedLeft,Number(right.dataset.right)]);
+      s.selectedLeft=null;save();renderGame();return;
+    }
+    const b=e.target.closest('[data-pick]');if(!b)return;
+    const i=Number(b.dataset.pick);
+    if(a.mode==='order'){s.draft=Array.isArray(s.draft)?s.draft:[];if(!s.draft.includes(i))s.draft.push(i);}
+    else if(a.mode==='multi'){s.draft=Array.isArray(s.draft)?s.draft:[]; const val=a.choices[i];s.draft=s.draft.includes(val)?s.draft.filter(x=>x!==val):[...s.draft,val];}
+    else{s.draft=a.choices[i];}
+    save();renderGame();
+  }
+  function gameSelectSkip(){
+    const s=gameState().session,a=gameItem();
+    if(!s||!a||s.graded||a.mode==='flash')return;
+    s.draft=s.draft==='__skip__'?null:'__skip__';
+    save();renderGame();
+  }
+  function gameConfirm(skip=false){
+    const s=gameState().session,a=gameItem();if(!s||!a||s.graded)return;
+    const d=s.draft;
+    skip=skip||d==='__skip__';
+    if(!skip && d===null)return;
+    let ok=false;
+    if(!skip){
+      switch(a.mode){
+        case 'case':case 'cloze':ok=d===a.correct;break;
+        case 'multi':ok=Array.isArray(d)&&d.length===a.correct.length&&d.every(v=>a.correct.includes(v));break;
+        case 'order':ok=Array.isArray(d)&&d.length===a.items.length&&d.every((v,i)=>v===i);break;
+        case 'match':ok=Array.isArray(d)&&d.length===a.pairs.length&&d.every(p=>p[0]===p[1]);break;
+      }
+    }
+    s.graded={ok,skip};
+    s.responses.push({id:a.id,ok,skip});
+    const g=gameState();
+    g.seen=[...new Set([...g.seen,a.id])];
+    g.pending=ok?g.pending.filter(x=>x!==a.id):[...new Set([...g.pending,a.id])];
+    save();renderGame();
+  }
+  function gameFlashGrade(ok){
+    const s=gameState().session,a=gameItem();if(!s||!a||a.mode!=='flash'||!s.revealed||s.graded)return;
+    s.graded={ok,skip:!ok};s.responses.push({id:a.id,ok,skip:!ok});
+    const g=gameState();g.seen=[...new Set([...g.seen,a.id])];g.pending=ok?g.pending.filter(x=>x!==a.id):[...new Set([...g.pending,a.id])];
+    save();gameNext();
+  }
+  function gameNext(){
+    const s=gameState().session;if(!s||!s.graded)return;
+    if(s.index+1>=s.ids.length){
+      const g=gameState();const results=s.responses;
+      const wins=results.filter(r=>r.ok).length;
+      const skips=results.filter(r=>r.skip).length;
+      const wrong=results.length-wins-skips;
+      g.correct+=wins;g.wrong+=wrong;g.skipped+=skips;
+      g.history.unshift({at:new Date().toISOString(),correct:wins,wrong,skipped:skips,total:results.length});g.history=g.history.slice(0,40);
+      g.lastResult={at:new Date().toISOString(),correct:wins,wrong,skipped:skips,total:results.length,responses:results};g.session=null;save();screen('game-result');return;
+    }
+    s.index++;s.draft=null;s.selectedLeft=null;s.graded=null;s.revealed=false;save();renderGame();window.scrollTo(0,0);
+  }
+  function renderGameResult(){
+    const g=gameState(),r=g.lastResult;
+    if(!r){screen('home');return;}
+    el('gameResultNum').textContent=r.correct+' / '+r.total;
+    el('gameResultPercent').textContent=Math.round(100*r.correct/r.total)+'% de aciertos · '+r.wrong+' errores · '+r.skipped+' a repasar';
+    el('gameReviewRows').innerHTML=r.responses.filter(x=>!x.ok).map(x=>{
+      const a=activityMap.get(x.id);return a?`<details class="review-item"><summary><strong>${encode(a.prompt)}</strong></summary><div class="review-body"><p><b>Respuesta:</b> ${encode(gameAnswerLabel(a))}</p><p>${encode(a.explanation)}</p><small>${encode(a.reference)}</small></div></details>`:'';
+    }).join('')||'<p>¡No quedó ningún desafío pendiente en esta ronda!</p>';
+    el('gamePendingCount').textContent=g.pending.length+' por reforzar';
+  }
+  function wireGames(){
+    el('openLessons').addEventListener('click',()=>enterLessons(learningModules[0]?.id));
+    el('playGame').addEventListener('click',enterGame);
+    el('lessonCards').addEventListener('click',e=>{const b=e.target.closest('[data-module]');if(b)enterLessons(b.dataset.module);});
+    el('lessonList').addEventListener('click',e=>{const b=e.target.closest('[data-read]');if(b)setLessonRead(b.dataset.read);});
+    el('learnPractice').addEventListener('click',()=>startGame(selectedModule));
+    el('learnHome').addEventListener('click',()=>screen('home'));
+    el('gameHome').addEventListener('click',()=>screen('home'));
+    el('gameWork').addEventListener('click',gameAction);
+    el('gameConfirm').addEventListener('click',()=>gameConfirm(false));
+    el('gameSkip').addEventListener('click',gameSelectSkip);
+    el('gameContinue').addEventListener('click',gameNext);
+    el('gameFlip').addEventListener('click',()=>{const s=gameState().session;if(s){s.revealed=true;save();renderGame();}});
+    el('gameRemembered').addEventListener('click',()=>gameFlashGrade(true));
+    el('gameForgot').addEventListener('click',()=>gameFlashGrade(false));
+    el('gameResultHome').addEventListener('click',()=>screen('home'));
+    el('gameResultMore').addEventListener('click',()=>startGame());
+    el('gameResultReview').addEventListener('click',()=>startGame(null,true));
+  }
+
   function wire() {
     if (bank.length === 0) { el('startBtn').disabled = true; toast('Faltan los datos del cuestionario.'); }
+    wireGames();
     el('brandBtn').addEventListener('click', () => screen('home'));
     el('themeToggle').addEventListener('click', toggleTheme);
     el('openMaterial').addEventListener('click', () => screen('library'));
@@ -827,6 +1141,7 @@ html[data-theme="dark"] .header-link:hover,html[data-theme="dark"] .logout-btn:h
     const {data:cloud,error:progError} = await supa.from('dnit_progress').select('data').eq('user_id',user.id).maybeSingle();
     if (expectedEpoch !== sessionEpoch || loggingOut) return;
     if (activityExpired()) { await logOut('idle'); return; }
+    if (databaseFailure(progError)) { showDatabaseOffline(progError); return; }
     if (progError) console.warn('El progreso en la nube no pudo cargarse:',progError.message);
     state = normalizeState(cloud?.data || local);
     if (state.session) {
@@ -835,6 +1150,7 @@ html[data-theme="dark"] .header-link:hover,html[data-theme="dark"] .logout-btn:h
     }
     document.getElementById('authShell').classList.add('hidden');
     document.getElementById('appRoot').classList.remove('hidden');
+    initGames(source);
     if (!wired) { wire(); wired = true; }
     screen('home');
     save();
@@ -853,6 +1169,7 @@ html[data-theme="dark"] .header-link:hover,html[data-theme="dark"] .logout-btn:h
     const progressToSave = state;
     // Ocultamos primero los datos: nunca esperar la respuesta de la red para bloquearlos.
     user = null; bank = []; material = []; sources = new Map();
+    learningModules = []; activities = []; activityMap = new Map();
     sourceTitles = {}; scopedSources = new Set(); byId = new Map(); state = blank();
     el('appRoot').classList.add('hidden');
     el('authShell').classList.remove('hidden');
@@ -904,7 +1221,7 @@ html[data-theme="dark"] .header-link:hover,html[data-theme="dark"] .logout-btn:h
 
   function screenReset() {
     currentScreen = 'home';
-    ['home','quiz','result','library'].forEach(x => el('screen-'+x).classList.toggle('hidden',x !== 'home'));
+    ['home','quiz','result','library','learn','game','game-result'].forEach(x => el('screen-'+x).classList.toggle('hidden',x !== 'home'));
   }
 
   async function resumeStudyConnection() {
