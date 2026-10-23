@@ -157,6 +157,22 @@ html[data-theme="dark"] .header-link:hover,html[data-theme="dark"] .logout-btn:h
 .option.chosen{box-shadow:inset 0 0 0 1px var(--blue)}
 .option.chosen:focus-visible{outline-offset:3px}
 @media(max-width:640px){.confirm-zone{margin-top:23px}.choice-hint{font-size:12px}.skip-zone .button-skip{width:100%}}
+
+/* Aviso accesible cuando la base de datos de Supabase esté pausada o inaccesible. */
+.auth-offline{display:none;text-align:center;padding:29px 0 8px;animation:popIn .2s ease-out}
+.auth-offline-icon{display:grid;place-items:center;margin:0 auto 19px;width:62px;height:62px;border-radius:19px;background:var(--soft);color:var(--blue);font-size:30px;font-weight:800}
+.auth-offline .eyebrow{display:block;margin-bottom:13px}
+.auth-offline h1{font-size:clamp(26px,5vw,33px);line-height:1.2;letter-spacing:-1.1px;margin:0 0 14px;color:var(--ink)}
+.auth-offline p{color:var(--muted);font-size:14px;line-height:1.65;margin:0 0 14px}
+.auth-offline .offline-contact{font-size:16px;font-weight:800;color:var(--ink);margin:0 0 24px}
+.auth-offline .offline-detail{font-size:12px;margin:17px 0 0}
+.auth-offline .button{width:100%}
+.auth-shell[data-auth-state="offline"] .auth-offline{display:block}
+.auth-shell[data-auth-state="offline"] .auth-intro,
+.auth-shell[data-auth-state="offline"] .login-form,
+.auth-shell[data-auth-state="offline"] .auth-message,
+.auth-shell[data-auth-state="offline"] .auth-foot,
+.auth-shell[data-auth-state="offline"] .auth-loading{display:none}
 </style>
   
   
@@ -169,6 +185,15 @@ html[data-theme="dark"] .header-link:hover,html[data-theme="dark"] .logout-btn:h
         <button type="button" id="authThemeToggle" class="theme-btn auth-theme-btn" title="Cambiar el tema" aria-label="Cambiar entre tema claro y oscuro"><span class="theme-glyph" aria-hidden="true">☾</span><span class="theme-copy">Oscuro</span></button>
       </div>
       <div class="auth-loading" id="authLoading" role="status" aria-live="polite"><span class="loading-spinner" aria-hidden="true"></span><strong>Restaurando tu sesión</strong><span>Comprobando acceso seguro…</span></div>
+      <section id="dbOffline" class="auth-offline" role="alert" aria-live="polite" aria-labelledby="offlineTitle">
+        <div class="auth-offline-icon" aria-hidden="true">!</div>
+        <span class="eyebrow">SERVICIO TEMPORALMENTE NO DISPONIBLE</span>
+        <h1 id="offlineTitle">Base de datos no disponible</h1>
+        <p>En este momento no podemos conectar con el sistema de estudio.</p>
+        <p class="offline-contact">Contactá a Miguel para que pueda activar la base de datos.</p>
+        <button type="button" id="retryDatabaseBtn" class="button button-primary button-wide">Reintentar conexión →</button>
+        <p class="offline-detail" id="dbOfflineDetail">Cuando el servicio vuelva a estar disponible, podrás continuar estudiando.</p>
+      </section>
       <div class="auth-intro"><span class="eyebrow">ACCESO PRIVADO · DNIT 2026</span>
       <h1 id="authTitle">Tu espacio para aprender.</h1>
       <p>Ingresá con tu cuenta para practicar y continuar donde te quedaste.</p></div>
@@ -305,8 +330,58 @@ html[data-theme="dark"] .header-link:hover,html[data-theme="dark"] .logout-btn:h
   function toggleTheme() { applyTheme(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark'); }
   function showAuthState(value) {
     const shell = el('authShell');
-    shell.dataset.authState = value === 'checking' ? 'checking' : 'login';
-    el('loginSubmit').disabled = value === 'checking';
+    shell.dataset.authState = ['checking', 'offline'].includes(value) ? value : 'login';
+    el('loginSubmit').disabled = value === 'checking' || value === 'offline';
+  }
+  function databaseFailure(error) {
+    if (!error) return false;
+    const status = Number(error.status || 0);
+    const code = String(error.code || '').toLowerCase();
+    const message = String(error.message || '').toLowerCase();
+    // Las credenciales incorrectas y las restricciones RLS NO son fallos de conectividad.
+    if (code === 'invalid_credentials' || code === 'invalid_grant') return false;
+    if (['pgrst000', 'pgrst001', 'pgrst002', 'pgrst003'].includes(code)) return true;
+    return status === 408 || status === 429 || status >= 500 ||
+      /failed to fetch|networkerror|network request failed|fetch failed|timeout|timed out|load failed|connection refused|connection closed|database unavailable|service unavailable|could not connect|aborterror/i.test(message);
+  }
+  function showDatabaseOffline(error) {
+    if (error) console.warn('DNIT: servicio de datos no disponible:', error);
+    clearTimeout(pendingSync);
+    pendingSync = null;
+    el('appRoot').classList.add('hidden'); // Nunca dejar el banco privado visible sin acceso comprobado.
+    el('authShell').classList.remove('hidden');
+    el('loginPassword').value = '';
+    showAuthState('offline');
+    el('retryDatabaseBtn').disabled = false;
+    el('dbOfflineDetail').textContent = navigator.onLine === false
+      ? 'Parece que no tenés conexión a internet. Revisala e intentá de nuevo; si persiste, contactá a Miguel.'
+      : 'Cuando el servicio vuelva a estar disponible, podrás continuar estudiando.';
+  }
+  // Verificamos que la API de datos responda antes de mostrar el formulario de login.
+  // Solo hacemos un pedido de metadatos: NO exponemos contenido privado de las preguntas.
+  async function checkDatabaseAvailability() {
+    const config = window.DNIT_CONFIG;
+    const ctrl = new AbortController();
+    const timeout = setTimeout(() => ctrl.abort(), 9000);
+    try {
+      const response = await fetch(config.url.replace(/\/$/, '') + '/rest/v1/', {
+        method: 'GET',
+        headers: { 'apikey': config.publishableKey, 'Accept': 'application/json' },
+        signal: ctrl.signal,
+        cache: 'no-store'
+      });
+      // 401/403 indican que la API está activa pero exige permisos.
+      if ([200, 401, 403].includes(response.status)) return true;
+      // En general, los proyectos pausados responden sin el servicio de PostgREST disponible.
+      if (response.status >= 500 || [404, 408, 429].includes(response.status)) return false;
+      // Un 3xx o una respuesta inesperada tampoco es una comprobación válida.
+      return false;
+    } catch (error) {
+      console.warn('DNIT: no se pudo verificar la base de datos:', error);
+      return false;
+    } finally {
+      clearTimeout(timeout);
+    }
   }
   const save = () => {
     if (!user) return;
@@ -318,7 +393,10 @@ html[data-theme="dark"] .header-link:hover,html[data-theme="dark"] .logout-btn:h
     if (!supa || !user) return;
     const data = {...state};
     const {error} = await supa.from('dnit_progress').upsert({user_id:user.id,data,updated_at:new Date().toISOString()}, {onConflict:'user_id'});
-    if (error) console.warn('No se pudo sincronizar el progreso:', error.message);
+    if (error) {
+      console.warn('No se pudo sincronizar el progreso:', error.message);
+      if (databaseFailure(error) && user && !loggingOut) showDatabaseOffline(error);
+    }
   }
 
   const pct = (n, d) => d ? Math.round(n * 100 / d) : 0;
@@ -715,7 +793,12 @@ html[data-theme="dark"] .header-link:hover,html[data-theme="dark"] .logout-btn:h
       await logOut('idle');
       return;
     }
-    if (user?.id === account.id && bank.length) return;
+    if (user?.id === account.id && bank.length) {
+      el('authShell').classList.add('hidden');
+      el('appRoot').classList.remove('hidden');
+      scheduleIdleTimer();
+      return;
+    }
     const expectedEpoch = sessionEpoch;
     user = account;
     scheduleIdleTimer();
@@ -723,6 +806,10 @@ html[data-theme="dark"] .header-link:hover,html[data-theme="dark"] .logout-btn:h
     const {data:rows,error} = await supa.from('dnit_content').select('payload').eq('id','material').limit(1);
     if (expectedEpoch !== sessionEpoch || loggingOut) return;
     if (activityExpired()) { await logOut('idle'); return; }
+    if (databaseFailure(error)) {
+      showDatabaseOffline(error);
+      return;
+    }
     if (error || !rows?.length || !rows[0].payload?.STUDY_QUESTIONS?.length) {
       await logOut('denied');
       return;
@@ -820,6 +907,54 @@ html[data-theme="dark"] .header-link:hover,html[data-theme="dark"] .logout-btn:h
     ['home','quiz','result','library'].forEach(x => el('screen-'+x).classList.toggle('hidden',x !== 'home'));
   }
 
+  async function resumeStudyConnection() {
+    if (!supa) return;
+    const msg = el('authMessage');
+    const button = el('retryDatabaseBtn');
+    button.disabled = true;
+    showAuthState('checking');
+    try {
+      if (!await checkDatabaseAvailability()) {
+        showDatabaseOffline();
+        return;
+      }
+      // Recuperar la sesión sin exigir contraseñas nuevamente si aún es válida.
+      const { data:cached, error:sessionError } = await supa.auth.getSession();
+      if (sessionError) {
+        if (databaseFailure(sessionError)) { showDatabaseOffline(sessionError); return; }
+        throw sessionError;
+      }
+      if (!cached?.session) {
+        msg.classList.remove('error');
+        msg.textContent = 'Ingresá con tu correo y contraseña para continuar.';
+        showAuthState('login');
+        return;
+      }
+      if (activityExpired()) {
+        await logOut('idle');
+        showAuthState('login');
+        return;
+      }
+      const {data:verified,error:verifyError} = await supa.auth.getUser();
+      if (databaseFailure(verifyError)) { showDatabaseOffline(verifyError); return; }
+      if (verifyError || !verified?.user) {
+        msg.classList.add('error');
+        msg.textContent = 'No se pudo validar tu sesión. Ingresá nuevamente.';
+        showAuthState('login');
+        return;
+      }
+      await enterStudy(verified.user);
+    } catch (err) {
+      console.warn('No pudimos comprobar la sesión:', err);
+      if (databaseFailure(err)) { showDatabaseOffline(err); return; }
+      msg.classList.add('error');
+      msg.textContent = 'No pudimos comprobar tu sesión. Intentá ingresar nuevamente.';
+      showAuthState('login');
+    } finally {
+      button.disabled = false;
+    }
+  }
+
   async function authBootstrap() {
     const settings = window.DNIT_CONFIG || {};
     const msg = el('authMessage');
@@ -845,7 +980,9 @@ html[data-theme="dark"] .header-link:hover,html[data-theme="dark"] .logout-btn:h
       msg.classList.remove('error');msg.textContent='Verificando cuenta…';
       try {
         const {data,error} = await supa.auth.signInWithPassword({email:el('loginEmail').value.trim(),password:el('loginPassword').value});
-        if (error || !data?.user) {
+        if (databaseFailure(error)) {
+          showDatabaseOffline(error);
+        } else if (error || !data?.user) {
           msg.classList.add('error');
           msg.textContent='Usuario o contraseña incorrectos, o cuenta no habilitada.';
         } else {
@@ -854,43 +991,14 @@ html[data-theme="dark"] .header-link:hover,html[data-theme="dark"] .logout-btn:h
         }
       } catch (err) {
         console.warn('Error al iniciar sesión:',err);
-        msg.classList.add('error');
-        msg.textContent='No se pudo conectar con Supabase. Revisá tu conexión.';
+        showDatabaseOffline(err);
       } finally {
         if (!loggingOut) el('loginSubmit').disabled = false;
       }
     });
     el('logoutBtn').addEventListener('click', () => void logOut('manual'));
-    // En una recarga, primero restauramos la sesión persistida y luego verificamos su identidad.
-    // No mostramos el formulario mientras la comprobación esté en curso.
-    try {
-      const { data:cached, error:sessionError } = await supa.auth.getSession();
-      if (sessionError) throw sessionError;
-      if (!cached?.session) {
-        msg.textContent = 'Ingresá con tu correo y contraseña para continuar.';
-        showAuthState('login');
-        return;
-      }
-      if (activityExpired()) {
-        await logOut('idle');
-        showAuthState('login');
-        return;
-      }
-      const {data:verified,error:verifyError} = await supa.auth.getUser();
-      if (verifyError || !verified?.user) {
-        // Un problema de conectividad no debe cerrar una sesión activa ni borrar el progreso.
-        msg.classList.add('error');
-        msg.textContent = 'No se pudo restaurar la sesión. Comprobá tu conexión e intentá actualizar.';
-        showAuthState('login');
-        return;
-      }
-      await enterStudy(verified.user);
-    } catch (err) {
-      console.warn('No se pudo restaurar la sesión:', err);
-      msg.classList.add('error');
-      msg.textContent = 'No pudimos comprobar tu sesión. Actualizá la página o revisá la conexión.';
-      showAuthState('login');
-    }
+    el('retryDatabaseBtn').addEventListener('click', () => void resumeStudyConnection());
+    await resumeStudyConnection();
   }
   loadTheme();
   el('authThemeToggle').addEventListener('click',toggleTheme);
