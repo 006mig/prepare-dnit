@@ -219,7 +219,34 @@ html[data-theme="dark"] .header-link:hover,html[data-theme="dark"] .logout-btn:h
 .auth-shell[data-auth-state="offline"] .auth-message,
 .auth-shell[data-auth-state="offline"] .auth-foot,
 .auth-shell[data-auth-state="offline"] .auth-loading{display:none}
-</style>
+
+  /* Repaso integral: material completo, examen y actividades, con contraste claro/oscuro */
+  .learning-badge-button{border:1px solid var(--line);cursor:pointer;white-space:normal;text-align:center}
+  .learning-badge-button:hover{border-color:var(--blue);background:var(--hover)}
+  .library-tabs{display:flex;gap:9px;flex-wrap:wrap;margin:23px 0 17px}
+  .library-tab{border:1px solid var(--line);border-radius:11px;background:var(--panel);color:var(--ink);padding:12px 16px;font-weight:800;cursor:pointer}
+  .library-tab[aria-selected="true"]{background:var(--soft);color:var(--blue);border-color:var(--blue)}
+  .library-entry .library-scope{margin:0 16px 8px}
+  .library-lesson-body{padding:0 17px 17px;line-height:1.7;color:var(--ink);font-size:14px}
+  .library-lesson-body p{white-space:pre-line;margin:10px 0}
+  .library-lesson-body small{display:block;color:var(--muted);margin:7px 0 15px}
+  .review-dashboard{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:11px;margin:18px 0 25px}
+  .review-metric{padding:18px 13px;border:1px solid var(--line);border-radius:14px;background:var(--panel);text-align:center}
+  .review-metric strong{display:block;font-size:30px;line-height:1.1;color:var(--ink)}
+  .review-metric span{font-size:12px;color:var(--muted)}
+  .review-section{padding:24px;border:1px solid var(--line);border-radius:18px;background:var(--panel);margin:14px 0;box-shadow:var(--elev)}
+  .review-section h2{font-size:20px;letter-spacing:-.5px;margin:0 0 7px}
+  .review-section p{font-size:13px;line-height:1.6;color:var(--muted);margin:0 0 15px}
+  .review-actions{display:flex;gap:10px;flex-wrap:wrap}
+  .review-actions .button{flex:1 1 200px;min-height:45px;padding:10px 14px}
+  .review-topic-row{border-top:1px solid var(--line);padding:15px 0 3px}
+  .review-topic-row:first-child{border:0}
+  .review-topic-row strong{display:block;color:var(--ink);font-size:14px}
+  .review-topic-row small{display:block;color:var(--muted);line-height:1.55;margin:3px 0 9px}
+  .review-topic-row .review-actions .button{flex:0 1 auto;font-size:12px;min-height:39px}
+  .study-recall-status{display:block;color:var(--muted);margin:10px 0 0;font-size:12px}
+  @media(max-width:640px){.review-dashboard{grid-template-columns:repeat(3,1fr);gap:7px}.review-metric{padding:13px 6px}.review-metric strong{font-size:25px}.review-section{padding:18px}.review-topic-row .review-actions .button{flex:1 1 100%}}
+  </style>
   
   
 </head>
@@ -279,8 +306,8 @@ html[data-theme="dark"] .header-link:hover,html[data-theme="dark"] .logout-btn:h
         </div>
 
         <section class="learning-hub hidden" id="learningHub" aria-labelledby="learningTitle">
-          <div class="learning-heading"><div><span class="eyebrow">NUEVA RUTA DE APRENDIZAJE</span><h2 id="learningTitle" class="learning-title">Aprendé jugando.</h2><p id="gameHeadline" class="learning-intro">Lecciones y actividades de la convocatoria.</p></div><span class="learning-badge">★ Repaso inteligente</span></div>
-          <div class="learning-actions"><button type="button" id="openLessons" class="button button-secondary">Aprender por temas →</button><button type="button" id="playGame" class="button button-primary">Jugar 20 desafíos del temario →</button></div>
+          <div class="learning-heading"><div><span class="eyebrow">NUEVA RUTA DE APRENDIZAJE</span><h2 id="learningTitle" class="learning-title">Aprendé jugando.</h2><p id="gameHeadline" class="learning-intro">Lecciones y actividades de la convocatoria.</p></div><button type="button" id="openSmartReview" class="learning-badge learning-badge-button" title="Abrir el centro de repaso">★ Repaso inteligente →</button></div>
+          <div class="learning-actions"><button type="button" id="openLessons" class="button button-secondary">Aprender por temas →</button><button type="button" id="playGame" class="button button-primary">Jugar 20 desafíos del temario →</button><button type="button" id="openSmartReviewSecond" class="button button-secondary">Repaso inteligente completo →</button><button type="button" id="playAllModules" class="button button-secondary">Jugar todos los temas →</button></div>
           <p class="learning-stats" id="gameMetrics">Tu progreso se guarda con tu cuenta.</p>
           <div id="lessonCards" class="lesson-card-list" aria-label="Temas de aprendizaje"></div>
         </section>
@@ -295,7 +322,7 @@ html[data-theme="dark"] .header-link:hover,html[data-theme="dark"] .logout-btn:h
           <p class="progress-note" id="progressNote">Tu progreso se guarda automáticamente en este navegador.</p>
           <details class="history-disclosure" id="historyDisclosure"><summary>Ver mis últimas rondas <span aria-hidden="true">⌄</span></summary><div id="historyContent"></div></details>
         </section>
-        <div class="material-teaser"><span class="material-icon" aria-hidden="true">▤</span><div class="material-copy"><strong>¿Necesitás repasar?</strong><p>Consultá los 120 apartados del cuestionario original y sus explicaciones.</p></div><button type="button" class="button button-secondary material-action" id="openMaterial"><span>Abrir material</span><span aria-hidden="true" class="button-arrow">→</span></button></div>
+        <div class="material-teaser"><span class="material-icon" aria-hidden="true">▤</span><div class="material-copy"><strong>Guía de estudio completa</strong><p>Encontrá todas las lecciones por materia y, por separado, los apartados del cuestionario original.</p></div><button type="button" class="button button-secondary material-action" id="openMaterial"><span>Abrir guía y material</span><span aria-hidden="true" class="button-arrow">→</span></button></div>
       </section>
       <section class="screen hidden" id="screen-quiz" aria-labelledby="questionTitle">
         <div class="quiz-header"><button type="button" class="link-back" id="goHome">← Volver</button><span class="question-number" id="questionNumber">Pregunta 1 de 20</span></div>
@@ -318,7 +345,17 @@ html[data-theme="dark"] .header-link:hover,html[data-theme="dark"] .logout-btn:h
         <div class="result-actions"><button type="button" class="button button-primary button-wide" id="anotherBtn">Responder otras 20 preguntas <span>→</span></button><button type="button" class="button button-secondary button-wide" id="reviewBtn">Revisar mis respuestas</button><button type="button" class="button button-secondary button-wide" id="resultHome">Volver al inicio</button></div>
         <section id="reviewPanel" class="review-panel hidden" aria-labelledby="reviewTitle"><div class="simple-section-heading"><h2 id="reviewTitle">Revisión de respuestas</h2><button id="reviewFilter" type="button" class="button button-secondary">Mostrar todas</button></div><p class="muted-small">Consultá la respuesta correcta y, si necesitás, la explicación del documento.</p><div id="reviewList"></div></section>
       </section>
-      <section class="screen hidden" id="screen-library" aria-labelledby="libraryTitle"><div class="library-top"><button type="button" class="link-back" id="libraryHome">← Volver al inicio</button><span class="eyebrow">CUESTIONARIO ORIGINAL</span><h1 id="libraryTitle">Material de estudio</h1><p>Los 120 apartados originales del PDF están disponibles, sin saltos. Los que no corresponden directamente a esta práctica aparecen como material complementario. Tocá uno para leer su respuesta.</p></div><label class="library-search"><span aria-hidden="true">⌕</span><input id="libraryInput" type="search" placeholder="Buscar pregunta o tema…" autocomplete="off" aria-label="Buscar en el material"></label><p id="libraryCount" class="muted-small"></p><div id="libraryList" class="library-list"></div><button id="libraryMore" type="button" class="button button-secondary button-wide">Mostrar más preguntas</button><p class="pdf-note">La biblioteca contiene el PDF original completo. Las 20 preguntas de cada ronda provienen del banco de práctica específico para Apoyo y Gestión Documental. No es un examen oficial.</p></section>
+      <section class="screen hidden" id="screen-library" aria-labelledby="libraryTitle"><div class="library-top"><button type="button" class="link-back" id="libraryHome">← Volver al inicio</button><span class="eyebrow">MATERIAL DE APRENDIZAJE · TODAS LAS MATERIAS</span><h1 id="libraryTitle">Guía de estudio completa</h1><p id="libraryDescription">Todas las lecciones organizadas por materia, incluyendo los temas complementarios.</p></div>
+        <div class="library-tabs" role="tablist" aria-label="Tipo de material"><button class="library-tab" id="libraryGuideTab" type="button" role="tab" aria-selected="true">Guía completa</button><button class="library-tab" id="librarySourceTab" type="button" role="tab" aria-selected="false">Cuestionario original</button></div>
+        <label class="library-search"><span aria-hidden="true">⌕</span><input id="libraryInput" type="search" placeholder="Buscar lección, tema o palabra…" autocomplete="off" aria-label="Buscar en el material"></label><p id="libraryCount" class="muted-small"></p><div id="libraryList" class="library-list"></div><button id="libraryMore" type="button" class="button button-secondary button-wide">Mostrar más contenido</button><p class="pdf-note" id="libraryNote">Las lecciones incluyen todo lo disponible en la guía, sin límite fijo. El cuestionario original se puede consultar en la otra pestaña.</p></section>
+      <section class="screen hidden" id="screen-smart-review" aria-labelledby="smartReviewTitle">
+        <button type="button" class="link-back" id="smartReviewHome">← Volver al inicio</button>
+        <div class="learn-screen-head"><span class="eyebrow">APRENDIZAJE ADAPTATIVO · TODAS LAS MATERIAS</span><h1 id="smartReviewTitle">Repaso inteligente completo</h1><p>Reunimos lo pendiente del examen, los juegos y la guía de estudio. Incluimos las materias complementarias: el límite de 20 se aplica solamente a cada ronda.</p></div>
+        <div class="review-dashboard"><div class="review-metric"><strong id="reviewQuizCount">0</strong><span>Preguntas por reforzar</span></div><div class="review-metric"><strong id="reviewGameCount">0</strong><span>Desafíos por reforzar</span></div><div class="review-metric"><strong id="reviewLessonCount">0</strong><span>Lecciones por revisar</span></div></div>
+        <div class="review-section"><h2>1. Errores del examen</h2><p id="reviewQuizDescription"></p><div class="review-actions"><button type="button" class="button button-primary" id="reviewQuizStart">Repasar preguntas pendientes →</button><button type="button" class="button button-secondary" id="reviewQuizAll">Practicar otras 20 →</button></div></div>
+        <div class="review-section"><h2>2. Juegos y desafíos</h2><p id="reviewGameDescription"></p><div class="review-actions"><button type="button" class="button button-primary" id="reviewGameStart">Repetir desafíos fallados →</button><button type="button" class="button button-secondary" id="reviewGameAll">Jugar todos los temas →</button></div></div>
+        <div class="review-section"><h2>3. Guía de estudio por materia</h2><p id="reviewLessonDescription"></p><div id="reviewModuleList"></div></div>
+      </section>
 
       <section class="screen hidden" id="screen-learn" aria-labelledby="learnTitle">
         <button class="link-back" type="button" id="learnHome">← Volver al inicio</button>
@@ -484,14 +521,16 @@ html[data-theme="dark"] .header-link:hover,html[data-theme="dark"] .logout-btn:h
   let isChanging = false;
   let reviewAll = false;
   let libraryLimit = 15;
+  let libraryTab = 'guide';
 
   function screen(which) {
     currentScreen = which;
-    ['home','quiz','result','library','learn','game','game-result'].forEach(x => el(`screen-${x}`).classList.toggle('hidden', x !== which));
+    ['home','quiz','result','library','learn','game','game-result','smart-review'].forEach(x => el(`screen-${x}`).classList.toggle('hidden', x !== which));
     if (which === 'home') renderHome();
     if (which === 'quiz') renderQuestion();
     if (which === 'result') renderResult();
     if (which === 'library') renderLibrary();
+    if (which === 'smart-review') renderSmartReview();
     if (which === 'game') renderGame();
     if (which === 'game-result') renderGameResult();
     window.scrollTo(0, 0);
@@ -505,7 +544,7 @@ html[data-theme="dark"] .header-link:hover,html[data-theme="dark"] .logout-btn:h
     el('sessionsLabel').textContent = totalRounds() === 1 ? '1 ronda finalizada' : `${totalRounds()} rondas finalizadas`;
     el('startBtn').innerHTML = state.session ? 'Continuar mi examen <span aria-hidden="true">→</span>' : 'Comenzar examen <span aria-hidden="true">→</span>';
     el('restartBtn').classList.toggle('hidden', !state.session);
-    el('progressNote').textContent = `${bank.length} preguntas · ${state.pending.length} por reforzar · Progreso sincronizado con tu cuenta.`;
+    el('progressNote').textContent = `${bank.length} preguntas en el banco de exámenes · ${state.pending.length} por reforzar · Progreso sincronizado con tu cuenta.`;
     el('historyContent').innerHTML = state.history.length ? state.history.slice(0, 8).map(h => {
       const date = h.at ? new Date(h.at).toLocaleDateString('es-PY', { day: '2-digit', month: 'short' }) : '—';
       const extra = h.legacy ? ' (ronda anterior)' : ` · ${h.wrong} errores · ${h.skipped} no sé`;
@@ -525,15 +564,20 @@ html[data-theme="dark"] .header-link:hover,html[data-theme="dark"] .logout-btn:h
     return shuffle(chosen);
   }
 
-  function drawRound() {
+  function drawRound(onlyPending = false) {
     if (!bank.length) return [];
-    const take = Math.min(20, bank.length);
+    const take = Math.min(20, onlyPending ? bank.filter(q => state.pending.includes(q.id)).length : bank.length);
     const seen = new Set(state.seen);
     if (seen.size >= bank.length) { state.seen = []; seen.clear(); }
     // Como Duolingo: los errores pendientes vuelven en la PRÓXIMA ronda.
     const dueIds = new Set(state.pending);
     const pending = shuffle(bank.filter(q => dueIds.has(q.id)));
     let chosen = pickBalanced(pending, Math.min(take, pending.length));
+    if (onlyPending) return shuffle(chosen).map(q => {
+      if (q.type !== 'mc') return {...q,choices:[...q.choices]};
+      const order=shuffle(q.choices.map((_,i)=>i));
+      return {...q,choices:order.map(i=>q.choices[i]),correct:order.indexOf(q.correct)};
+    });
     let selected = new Set(chosen.map(q => q.id));
     if (chosen.length < take) {
       const newQuestions = bank.filter(q => !selected.has(q.id) && !seen.has(q.id));
@@ -554,8 +598,8 @@ html[data-theme="dark"] .header-link:hover,html[data-theme="dark"] .logout-btn:h
     });
   }
 
-  function newRound() {
-    const items = drawRound();
+  function newRound(onlyPending = false) {
+    const items = drawRound(onlyPending);
     if (!items.length) { toast('No se encontraron preguntas para comenzar.'); return; }
     state.session = { items, index: 0, responses: Array(items.length).fill(null), draft: null, startedAt: new Date().toISOString() };
     save();
@@ -752,13 +796,39 @@ html[data-theme="dark"] .header-link:hover,html[data-theme="dark"] .logout-btn:h
     return sourceTitles[s.id] || `Pregunta ${s.id}`;
   }
 
+  function allLessons() {
+    return learningModules.flatMap(m => (m.lessons || []).map(lesson => ({...lesson,moduleId:m.id,moduleTitle:m.title,optional:!!m.optional})));
+  }
+  function changeLibraryTab(tab) {
+    libraryTab=tab==='source'?'source':'guide';
+    libraryLimit=15;
+    el('libraryInput').value='';
+    renderLibrary();
+  }
   function renderLibrary() {
-    const search = el('libraryInput').value.trim().toLocaleLowerCase('es');
-    const filtered = material.filter(x => (`${x.id} ${x.text} ${sourceTitle(x)}`).toLocaleLowerCase('es').includes(search));
-    const shown = filtered.slice(0, libraryLimit);
-    el('libraryCount').textContent = `${filtered.length} ${filtered.length === 1 ? 'apartado encontrado' : 'apartados encontrados'}`;
-    el('libraryList').innerHTML = shown.length ? shown.map(x => `<details class="library-entry"><summary><span class="library-number">${x.id}</span><span>${encode(sourceTitle(x))}</span></summary><p class="library-scope">${scopedSources.has(x.id) ? 'Apartado usado en este simulador' : 'Material complementario del cuestionario original'}</p><pre>${encode(x.text)}</pre></details>`).join('') : '<p class="history-empty">No encontramos preguntas con ese texto.</p>';
-    el('libraryMore').classList.toggle('hidden', shown.length >= filtered.length);
+    const guide=libraryTab==='guide';
+    const search=el('libraryInput').value.trim().toLocaleLowerCase('es');
+    el('libraryGuideTab').setAttribute('aria-selected',String(guide));
+    el('librarySourceTab').setAttribute('aria-selected',String(!guide));
+    el('libraryTitle').textContent=guide?'Guía de estudio completa':'Cuestionario original';
+    el('libraryInput').placeholder=guide?'Buscar lección, tema o palabra…':'Buscar apartado o referencia…';
+    el('libraryDescription').textContent=guide
+      ? `Todas las lecciones de ${learningModules.length} materias, incluidos los temas complementarios. Buscá cualquier concepto o ingresá a su materia.`
+      : `Los ${material.length} apartados del material original que acompaña al simulador de preguntas. Esto es independiente de la guía y de la cantidad de preguntas del banco.`;
+    el('libraryNote').textContent=guide?'Estudiar una lección no significa dominarla: podés marcarla como leída y volver a repasarla.':'El simulador ofrece rondas de hasta 20 preguntas tomadas de su banco de preguntas. No es un examen oficial.';
+    if(guide){
+      const filtered=allLessons().filter(x=>(`${x.moduleTitle} ${x.title} ${x.body} ${x.reference}`).toLocaleLowerCase('es').includes(search));
+      const shown=filtered.slice(0,libraryLimit);
+      el('libraryCount').textContent=`${filtered.length} lecciones encontradas de ${allLessons().length} en total`;
+      el('libraryList').innerHTML=shown.map(x=>`<details class="library-entry"><summary><span class="library-number">${encode(x.moduleTitle)}</span><span>${encode(x.title)}${(state.learningRead||[]).includes(x.id)?' · ✓ Leída':''}</span></summary><div class="library-lesson-body"><p>${encode(x.body)}</p><small>${encode(x.reference||'')}</small><button class="button button-secondary" type="button" data-open-lesson="${encode(x.id)}" data-module="${encode(x.moduleId)}">Ir a esta lección →</button></div></details>`).join('')||'<p class="history-empty">No encontramos lecciones con ese término.</p>';
+      el('libraryMore').classList.toggle('hidden',shown.length>=filtered.length);
+      return;
+    }
+    const filtered=material.filter(x=>(`${x.id} ${x.text} ${sourceTitle(x)}`).toLocaleLowerCase('es').includes(search));
+    const shown=filtered.slice(0,libraryLimit);
+    el('libraryCount').textContent=`${filtered.length} apartados encontrados de ${material.length} en total`;
+    el('libraryList').innerHTML=shown.map(x=>`<details class="library-entry"><summary><span class="library-number">${encode(x.id)}</span><span>${encode(sourceTitle(x))}</span></summary><p class="library-scope">${scopedSources.has(x.id)?'Referencia del simulador':'Material complementario del cuestionario original'}</p><pre>${encode(x.text)}</pre></details>`).join('')||'<p class="history-empty">No encontramos apartados con ese término.</p>';
+    el('libraryMore').classList.toggle('hidden',shown.length>=filtered.length);
   }
 
   // ===== Juegos pedagógicos: se cargan desde el material privado con RLS =====
@@ -776,6 +846,51 @@ html[data-theme="dark"] .header-link:hover,html[data-theme="dark"] .logout-btn:h
   const moduleName=id=>learningModules.find(x=>x.id===id)?.title || 'Repaso';
   const withoutTags=str=>encode(str || '');
   const gameAnswerLabel=a=>a.mode==='flash'?a.back : a.mode==='order'?a.items.join(' → ') : a.mode==='match'?a.pairs.map(p=>p.join(' → ')).join(' · '):Array.isArray(a.correct)?a.correct.join(' · '):a.correct;
+  function lessonReviewData(id){
+    const entry=state.lessonReview && state.lessonReview[id];
+    return entry && typeof entry==='object' ? entry : null;
+  }
+  function lessonDue(lesson) {
+    if(!(state.learningRead||[]).includes(lesson.id))return false;
+    const data=lessonReviewData(lesson.id);
+    // Lecciones leídas antes de esta actualización: disponibles para repasar sin perder progreso.
+    return !data || !Number.isFinite(Date.parse(data.dueAt)) || Date.parse(data.dueAt)<=Date.now();
+  }
+  function reviewLessonCounts(m){
+    const lessons=m.lessons||[];
+    const read=lessons.filter(l=>(state.learningRead||[]).includes(l.id)).length;
+    const due=lessons.filter(lessonDue).length;
+    return {read,due,unread:lessons.length-read,total:lessons.length};
+  }
+  function renderSmartReview(){
+    const g=gameState();
+    const all=allLessons();
+    const due=all.filter(lessonDue).length;
+    const unread=all.filter(l=>!(state.learningRead||[]).includes(l.id)).length;
+    const qPending=bank.filter(q=>state.pending.includes(q.id)).length;
+    const aPending=activities.filter(a=>g.pending.includes(a.id)).length;
+    el('reviewQuizCount').textContent=qPending;
+    el('reviewGameCount').textContent=aPending;
+    el('reviewLessonCount').textContent=due;
+    el('reviewQuizDescription').textContent=`${qPending} preguntas para reforzar de ${bank.length} disponibles. Las rondas de repaso contienen hasta 20 preguntas pendientes, sin agregar preguntas nuevas.`;
+    el('reviewGameDescription').textContent=`${aPending} actividades pendientes de ${activities.length} disponibles. Podés repasar solo errores o practicar todas las materias, incluidas las complementarias.`;
+    el('reviewLessonDescription').textContent=`${all.length} lecciones en ${learningModules.length} materias · ${unread} todavía sin leer · ${due} para volver a revisar. Leer una lección no se contabiliza como respuesta correcta.`;
+    el('reviewQuizStart').disabled=qPending===0;
+    el('reviewGameStart').disabled=aPending===0;
+    el('reviewGameAll').disabled=activities.length===0;
+    const sections=[...learningModules].sort((a,b)=>{
+      const ap=activities.filter(x=>x.module===a.id&&g.pending.includes(x.id)).length;
+      const bp=activities.filter(x=>x.module===b.id&&g.pending.includes(x.id)).length;
+      const ac=reviewLessonCounts(a),bc=reviewLessonCounts(b);
+      return (bp*10+bc.due*3+bc.unread)-(ap*10+ac.due*3+ac.unread);
+    });
+    el('reviewModuleList').innerHTML=sections.map(m=>{
+      const c=reviewLessonCounts(m);
+      const pending=activities.filter(a=>a.module===m.id&&g.pending.includes(a.id)).length;
+      const total=activities.filter(a=>a.module===m.id).length;
+      return `<div class="review-topic-row"><strong>${m.icon||'📚'} ${encode(m.title)}${m.optional?' · Complementario':''}</strong><small>${c.read}/${c.total} lecciones leídas · ${c.due} para repasar · ${c.unread} nuevas · ${pending}/${total} desafíos pendientes</small><div class="review-actions"><button class="button button-secondary" type="button" data-review-module="${encode(m.id)}">Leer y repasar lecciones →</button><button class="button button-secondary" type="button" data-practice-module="${encode(m.id)}" ${total?'':'disabled'}>Practicar este tema →</button></div></div>`;
+    }).join('');
+  }
   function initGames(source){
     learningModules=Array.isArray(source.LEARNING_MODULES)?source.LEARNING_MODULES:[];
     activities=Array.isArray(source.ACTIVITIES)?source.ACTIVITIES:[];
@@ -790,14 +905,15 @@ html[data-theme="dark"] .header-link:hover,html[data-theme="dark"] .logout-btn:h
     const main=activities.filter(a=>!learningModules.find(m=>m.id===a.module)?.optional).length;
     const optional=activities.length-main;
     el('gameHeadline').textContent=`${learningModules.reduce((n,m)=>n+m.lessons.length,0)} lecciones · ${main} desafíos del temario + ${optional} complementarios`;
-    el('gameMetrics').textContent=`${g.correct} aciertos · ${g.pending.length} desafíos por repasar`;
+    const due=allLessons().filter(lessonDue).length;
+    el('gameMetrics').textContent=`${g.correct} aciertos en juegos · ${g.pending.length} desafíos pendientes · ${due} lecciones por revisar`;
     el('playGame').textContent=g.session?'Continuar mi aventura →':'Jugar 20 desafíos del temario →';
     el('lessonCards').innerHTML=learningModules.map(m=>{
-      const count=m.lessons.length, read=(state.learningRead || []).filter(id=>id.startsWith(m.id+'-')).length;
+      const count=(m.lessons||[]).length, read=reviewLessonCounts(m).read;
       return `<button class="lesson-card" type="button" data-module="${encode(m.id)}"><span class="lesson-emoji" aria-hidden="true">${m.icon}</span><span class="lesson-info"><strong>${encode(m.title)}</strong><small>${m.optional?'Material complementario · ':''}${read}/${count} lecciones leídas · ${activities.filter(a=>a.module===m.id).length} actividades</small></span><span class="lesson-chevron" aria-hidden="true">→</span></button>`;
     }).join('');
   }
-  function enterLessons(moduleId){
+  function enterLessons(moduleId, focusLessonId=null){
     selectedModule=moduleId || selectedModule || learningModules[0]?.id;
     const m=learningModules.find(x=>x.id===selectedModule);
     if(!m)return;
@@ -808,26 +924,43 @@ html[data-theme="dark"] .header-link:hover,html[data-theme="dark"] .logout-btn:h
     el('learnSource').href=m.source.url;
     renderLessonCards(m);
     screen('learn');
+    if(focusLessonId){
+      const item=[...el('lessonList').querySelectorAll('[data-lesson]')].find(n=>n.dataset.lesson===focusLessonId);
+      if(item){item.open=true;item.scrollIntoView({block:'start'});}
+    }
   }
   function renderLessonCards(m){
     el('lessonList').innerHTML=m.lessons.map((lesson,i)=>{
-      const done=(state.learningRead||[]).includes(lesson.id);
-      return `<details class="study-note"><summary><span class="study-note-number">${String(i+1).padStart(2,'0')}</span><span class="study-note-heading">${encode(lesson.title)}</span><span class="study-note-done">${done?'✓ Leído':'Leer'}</span></summary><div class="study-note-body"><p>${encode(lesson.body)}</p><div class="study-source">${encode(lesson.reference)}</div><button class="button button-secondary study-read" type="button" data-read="${encode(lesson.id)}">${done?'✓ Lección completada':'Marcar como leído'}</button></div></details>`;
+      const done=(state.learningRead||[]).includes(lesson.id),due=lessonDue(lesson);
+      return `<details class="study-note" data-lesson="${encode(lesson.id)}"><summary><span class="study-note-number">${String(i+1).padStart(2,'0')}</span><span class="study-note-heading">${encode(lesson.title)}</span><span class="study-note-done">${!done?'Leer':due?'↻ Repasar':'✓ Leída'}</span></summary><div class="study-note-body"><p>${encode(lesson.body)}</p><div class="study-source">${encode(lesson.reference)}</div><button class="button button-secondary study-read" type="button" data-read="${encode(lesson.id)}" ${done&&!due?'disabled':''}>${!done?'Marcar como leída':due?'Ya repasé esta lección':'✓ Próxima revisión programada'}</button><small class="study-recall-status">${!done?'Al leerla, te la recordaremos para repasarla después.':due?'Esta lección está lista para una revisión.':'Esta lección tiene su próxima revisión programada.'}</small></div></details>`;
     }).join('');
     el('learnPractice').textContent=`Practicar ${m.title} →`;
   }
   function setLessonRead(id){
+    if(!allLessons().some(l=>l.id===id))return;
     if(!Array.isArray(state.learningRead))state.learningRead=[];
-    if(!state.learningRead.includes(id))state.learningRead.push(id);
+    if(!state.lessonReview || typeof state.lessonReview!=='object')state.lessonReview={};
+    const alreadyRead=state.learningRead.includes(id);
+    if(!alreadyRead)state.learningRead.push(id);
+    const old=lessonReviewData(id);
+    const level=alreadyRead?Math.min(5,(old?.level||1)+1):1;
+    const intervals=[0,1,3,7,14,30];
+    const now=Date.now();
+    state.lessonReview[id]={level,reviewedAt:new Date(now).toISOString(),dueAt:new Date(now+intervals[level]*86400000).toISOString()};
     save();
-    // Actualizar solo la lección completada, sin cerrar la tarjeta que el estudiante está leyendo.
+    // No cerrar la lección abierta: solo cambiar el botón y el estado.
     const button=[...el('lessonList').querySelectorAll('[data-read]')].find(b=>b.dataset.read===id);
     if(button){
-      button.textContent='✓ Lección completada';
-      const status=button.closest('.study-note')?.querySelector('.study-note-done');
-      if(status)status.textContent='✓ Leído';
+      button.textContent='✓ Próxima revisión programada';
+      button.disabled=true;
+      const note=button.closest('.study-note');
+      const status=note?.querySelector('.study-note-done');
+      if(status)status.textContent='✓ Leída';
+      const hint=note?.querySelector('.study-recall-status');
+      if(hint)hint.textContent=`Próximo repaso en ${intervals[level]} día${intervals[level]===1?'':'s'}.`;
     }
   }
+
   function gamePick(pool,n){
     const g=gameState();
     const byId=new Set();const picked=[];
@@ -842,11 +975,11 @@ html[data-theme="dark"] .header-link:hover,html[data-theme="dark"] .logout-btn:h
     for(const a of shuffle(pool.filter(a=>!byId.has(a.id)))){if(!cap())break;add(a);}
     return shuffle(picked.slice(0,n));
   }
-  function startGame(mod=null,onlyPending=false){
+  function startGame(mod=null,onlyPending=false,includeOptional=false){
     if(!activities.length){toast('Primero instalá el paquete de actividades en Supabase.');return;}
     const g=gameState();
     if(g.session && !confirm('¿Descartar el desafío actual y empezar uno nuevo?'))return;
-    let pool=mod?activities.filter(a=>a.module===mod):activities.filter(a=>!learningModules.find(m=>m.id===a.module)?.optional);
+    let pool=mod?activities.filter(a=>a.module===mod):includeOptional?activities:activities.filter(a=>!learningModules.find(m=>m.id===a.module)?.optional);
     if(onlyPending){pool=pool.filter(a=>g.pending.includes(a.id));if(!pool.length){toast('Todavía no hay errores pendientes por repasar.');return;}}
     if(!pool.length){toast('No hay actividades para este tema.');return;}
     g.session={ids:gamePick(pool,Math.min(20,pool.length)),index:0,responses:[],draft:null,selectedLeft:null,graded:null,topic:mod,choiceSeed:Date.now()+'-'+Math.random()};
@@ -994,6 +1127,9 @@ html[data-theme="dark"] .header-link:hover,html[data-theme="dark"] .logout-btn:h
   function wireGames(){
     el('openLessons').addEventListener('click',()=>enterLessons(learningModules[0]?.id));
     el('playGame').addEventListener('click',enterGame);
+    el('playAllModules').addEventListener('click',()=>startGame(null,false,true));
+    el('openSmartReview').addEventListener('click',()=>screen('smart-review'));
+    el('openSmartReviewSecond').addEventListener('click',()=>screen('smart-review'));
     el('lessonCards').addEventListener('click',e=>{const b=e.target.closest('[data-module]');if(b)enterLessons(b.dataset.module);});
     el('lessonList').addEventListener('click',e=>{const b=e.target.closest('[data-read]');if(b)setLessonRead(b.dataset.read);});
     el('learnPractice').addEventListener('click',()=>startGame(selectedModule));
@@ -1016,7 +1152,16 @@ html[data-theme="dark"] .header-link:hover,html[data-theme="dark"] .logout-btn:h
     wireGames();
     el('brandBtn').addEventListener('click', () => screen('home'));
     el('themeToggle').addEventListener('click', toggleTheme);
-    el('openMaterial').addEventListener('click', () => screen('library'));
+    el('openMaterial').addEventListener('click', () => { libraryTab='guide';screen('library'); });
+    el('libraryGuideTab').addEventListener('click',()=>changeLibraryTab('guide'));
+    el('librarySourceTab').addEventListener('click',()=>changeLibraryTab('source'));
+    el('libraryList').addEventListener('click',e=>{const b=e.target.closest('[data-open-lesson]');if(b)enterLessons(b.dataset.module,b.dataset.openLesson);});
+    el('smartReviewHome').addEventListener('click',()=>screen('home'));
+    el('reviewQuizStart').addEventListener('click',()=>{if(state.session&&!confirm('¿Descartar el examen actual para repasar los errores?'))return;newRound(true);});
+    el('reviewQuizAll').addEventListener('click',()=>{if(state.session&&!confirm('¿Descartar el examen actual para empezar otras 20 preguntas?'))return;newRound();});
+    el('reviewGameStart').addEventListener('click',()=>startGame(null,true,true));
+    el('reviewGameAll').addEventListener('click',()=>startGame(null,false,true));
+    el('reviewModuleList').addEventListener('click',e=>{const learn=e.target.closest('[data-review-module]');if(learn){enterLessons(learn.dataset.reviewModule);return;}const practice=e.target.closest('[data-practice-module]');if(practice)startGame(practice.dataset.practiceModule);});
     el('libraryHome').addEventListener('click', () => screen('home'));
     el('startBtn').addEventListener('click', startOrResume);
     el('restartBtn').addEventListener('click', () => { if (confirm('¿Descartar esta ronda sin terminar y empezar otras 20 preguntas?')) newRound(); });
@@ -1025,7 +1170,7 @@ html[data-theme="dark"] .header-link:hover,html[data-theme="dark"] .logout-btn:h
     el('confirmBtn').addEventListener('click', confirmAnswer);
     el('continueBtn').addEventListener('click', continueQuiz);
     el('answerOptions').addEventListener('click', e => { const b = e.target.closest('[data-answer]'); if (b) selectAnswer(Number(b.dataset.answer)); });
-    el('anotherBtn').addEventListener('click', newRound);
+    el('anotherBtn').addEventListener('click', () => newRound());
     el('resultHome').addEventListener('click', () => screen('home'));
     el('reviewBtn').addEventListener('click', () => { el('reviewPanel').classList.remove('hidden'); renderReview(); el('reviewPanel').scrollIntoView({ behavior: 'smooth', block: 'start' }); });
     el('reviewFilter').addEventListener('click', () => { reviewAll = !reviewAll; renderReview(); });
@@ -1243,7 +1388,7 @@ html[data-theme="dark"] .header-link:hover,html[data-theme="dark"] .logout-btn:h
 
   function screenReset() {
     currentScreen = 'home';
-    ['home','quiz','result','library','learn','game','game-result'].forEach(x => el('screen-'+x).classList.toggle('hidden',x !== 'home'));
+    ['home','quiz','result','library','learn','game','game-result','smart-review'].forEach(x => el('screen-'+x).classList.toggle('hidden',x !== 'home'));
   }
 
   async function resumeStudyConnection() {
