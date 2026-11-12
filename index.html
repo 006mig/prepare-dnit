@@ -333,7 +333,7 @@ html[data-theme="dark"] .header-link:hover,html[data-theme="dark"] .logout-btn:h
         <div id="gameWork"></div>
         <div id="gameInputActions" class="game-buttons"><button type="button" id="gameConfirm" class="button button-primary" disabled>Confirmar respuesta →</button><button type="button" id="gameSkip" class="button button-secondary">No sé; mostrar y repasar</button></div>
         <div id="gameFlashActions" class="game-buttons hidden"><button type="button" id="gameFlip" class="button button-primary">Revelar respuesta →</button><div id="gameRate" class="memory-rate hidden"><button type="button" id="gameForgot" class="button button-secondary">Necesito repasarla</button><button type="button" id="gameRemembered" class="button button-primary">¡La recordé!</button></div></div>
-        <div id="gameFeedback" class="game-feedback hidden" aria-live="polite"><h2 id="gameFeedbackTitle"></h2><p id="gameFeedbackCorrect"></p><p id="gameFeedbackExplanation"></p><small id="gameFeedbackSource"></small><div class="game-buttons"><button type="button" id="gameContinue" class="button button-primary">Continuar →</button></div></div>
+        <div id="gameFeedback" class="game-feedback hidden" aria-live="polite"><h2 id="gameFeedbackTitle"></h2><p id="gameFeedbackMine"></p><p id="gameFeedbackCorrect"></p><p id="gameFeedbackExplanation"></p><small id="gameFeedbackSource"></small><div class="game-buttons"><button type="button" id="gameContinue" class="button button-primary">Continuar →</button></div></div>
       </section>
       <section class="screen hidden" id="screen-game-result" aria-labelledby="gameResultTitle">
         <div class="result-head"><span class="eyebrow">RETOS COMPLETADOS</span><h1 id="gameResultTitle">¡Terminaste tu aventura!</h1><p>Lo importante es aprender de cada intento.</p></div>
@@ -655,7 +655,11 @@ html[data-theme="dark"] .header-link:hover,html[data-theme="dark"] .logout-btn:h
     el('feedbackTitle').textContent = correct ? '✓ ¡Correcto! Muy bien.' : isSkip ? '↗ Ahora ya lo sabés' : '✕ No era esa, ¡seguí practicando!';
     const solution = encode(q.choices[q.correct]);
     const explain = shortExplanation(q);
-    el('feedbackBody').innerHTML = correct ? '<p>¡Excelente! Esta respuesta suma a tus aciertos.</p>' : `<p><strong>Respuesta correcta:</strong> ${solution}</p>${explain ? `<p><strong>Para recordar:</strong> ${encode(explain)}</p>` : ''}<p class="muted-small">Esta pregunta volverá a aparecer en otra ronda.</p><p class="muted-small">Fuente: ${encode(q.reference || 'Cuestionario de estudio')}</p>`;
+    // Siempre explicar la respuesta: acertar también es una oportunidad para aprender.
+    const intro = correct ? '¡Excelente! Esta respuesta suma a tus aciertos.' : isSkip
+      ? 'Bien por reconocerlo. Leé la respuesta y su explicación antes de continuar.'
+      : 'Revisá por qué esta opción es la correcta para no repetir el error.';
+    el('feedbackBody').innerHTML = `<p>${intro}</p><p><strong>Respuesta correcta:</strong> ${solution}</p>${explain ? `<p><strong>Para recordar:</strong> ${encode(explain)}</p>` : ''}${correct ? '' : '<p class="muted-small">Esta pregunta volverá a aparecer en otra ronda.</p>'}<p class="muted-small">Fuente: ${encode(q.reference || 'Cuestionario de estudio')}</p>`;
     const opts = [...el('answerOptions').querySelectorAll('[data-answer]')];
     opts.forEach((b,i) => {
       b.disabled = true;
@@ -815,7 +819,14 @@ html[data-theme="dark"] .header-link:hover,html[data-theme="dark"] .logout-btn:h
   function setLessonRead(id){
     if(!Array.isArray(state.learningRead))state.learningRead=[];
     if(!state.learningRead.includes(id))state.learningRead.push(id);
-    save(); const m=learningModules.find(x=>x.id===selectedModule);if(m)renderLessonCards(m);
+    save();
+    // Actualizar solo la lección completada, sin cerrar la tarjeta que el estudiante está leyendo.
+    const button=[...el('lessonList').querySelectorAll('[data-read]')].find(b=>b.dataset.read===id);
+    if(button){
+      button.textContent='✓ Lección completada';
+      const status=button.closest('.study-note')?.querySelector('.study-note-done');
+      if(status)status.textContent='✓ Leído';
+    }
   }
   function gamePick(pool,n){
     const g=gameState();
@@ -838,15 +849,17 @@ html[data-theme="dark"] .header-link:hover,html[data-theme="dark"] .logout-btn:h
     let pool=mod?activities.filter(a=>a.module===mod):activities.filter(a=>!learningModules.find(m=>m.id===a.module)?.optional);
     if(onlyPending){pool=pool.filter(a=>g.pending.includes(a.id));if(!pool.length){toast('Todavía no hay errores pendientes por repasar.');return;}}
     if(!pool.length){toast('No hay actividades para este tema.');return;}
-    g.session={ids:gamePick(pool,Math.min(20,pool.length)),index:0,responses:[],draft:null,selectedLeft:null,graded:null,topic:mod};
+    g.session={ids:gamePick(pool,Math.min(20,pool.length)),index:0,responses:[],draft:null,selectedLeft:null,graded:null,topic:mod,choiceSeed:Date.now()+'-'+Math.random()};
     save();screen('game');
   }
   function enterGame(){const g=gameState();if(g.session)screen('game');else startGame();}
   function gameItem(){const s=gameState().session;return s?activityMap.get(s.ids[s.index]):null;}
   function stableChoices(a){
-    if(a.mode==='order')return a.items.map((label,i)=>({label,i})).sort((x,y)=>hashChoice(a.id,x.i)-hashChoice(a.id,y.i));
-    if(a.mode==='match')return a.pairs.map((p,i)=>({label:p[1],i})).sort((x,y)=>hashChoice(a.id,x.i)-hashChoice(a.id,y.i));
-    return a.choices.map((label,i)=>({label,i})).sort((x,y)=>hashChoice(a.id,x.i)-hashChoice(a.id,y.i));
+    // Nuevo orden por ronda, pero estable durante la ronda y después de recargar la página.
+    const key=(gameState().session?.choiceSeed || 'legacy')+'|'+a.id;
+    if(a.mode==='order')return a.items.map((label,i)=>({label,i})).sort((x,y)=>hashChoice(key,x.i)-hashChoice(key,y.i));
+    if(a.mode==='match')return a.pairs.map((p,i)=>({label:p[1],i})).sort((x,y)=>hashChoice(key,x.i)-hashChoice(key,y.i));
+    return a.choices.map((label,i)=>({label,i})).sort((x,y)=>hashChoice(key,x.i)-hashChoice(key,y.i));
   }
   function hashChoice(id,index){const s=id+'|'+index;let v=2166136261;for(const ch of s){v=Math.imul(v^ch.charCodeAt(0),16777619);}return v>>>0;}
   function renderGame(){
@@ -889,7 +902,15 @@ html[data-theme="dark"] .header-link:hover,html[data-theme="dark"] .logout-btn:h
     if(graded){
       el('gameFeedbackTitle').textContent=s.graded.ok?'✓ ¡Bien hecho!':s.graded.skip?'La dejamos para repasar':'✕ Vamos a reforzar esto';
       el('gameFeedback').dataset.correct=String(!!s.graded.ok);
-      el('gameFeedbackCorrect').textContent='Respuesta: '+gameAnswerLabel(a);
+      let myAnswer='';
+      if(s.graded.skip && a.mode!=='flash')myAnswer='No sé';
+      else if(a.mode==='flash')myAnswer=s.graded.ok?'La recordé':'Necesito repasarla';
+      else if(a.mode==='order')myAnswer=Array.isArray(draft)?draft.map(i=>a.items[i]).join(' → '):'';
+      else if(a.mode==='match')myAnswer=Array.isArray(draft)?draft.map(p=>a.pairs[p[0]][0]+' → '+a.pairs[p[1]][1]).join(' · '):'';
+      else if(Array.isArray(draft))myAnswer=draft.join(' · ');
+      else myAnswer=String(draft ?? '');
+      el('gameFeedbackMine').textContent='Tu respuesta: '+myAnswer;
+      el('gameFeedbackCorrect').textContent='Respuesta correcta: '+gameAnswerLabel(a);
       el('gameFeedbackExplanation').textContent=a.explanation || 'Revisá el artículo relacionado para comprender la respuesta.';
       el('gameFeedbackSource').textContent=a.reference;
     }
@@ -944,7 +965,8 @@ html[data-theme="dark"] .header-link:hover,html[data-theme="dark"] .logout-btn:h
     const s=gameState().session,a=gameItem();if(!s||!a||a.mode!=='flash'||!s.revealed||s.graded)return;
     s.graded={ok,skip:!ok};s.responses.push({id:a.id,ok,skip:!ok});
     const g=gameState();g.seen=[...new Set([...g.seen,a.id])];g.pending=ok?g.pending.filter(x=>x!==a.id):[...new Set([...g.pending,a.id])];
-    save();gameNext();
+    // No avanzar automáticamente: mostrar la explicación de la tarjeta primero.
+    save();renderGame();
   }
   function gameNext(){
     const s=gameState().session;if(!s||!s.graded)return;
